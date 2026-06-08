@@ -1,0 +1,1509 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1.0,maximum-scale=1.0,user-scalable=no"/>
+<title>Nirbhay Bill App – NG® Universal Ledger</title>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=Courier+Prime:wght@400;700&display=swap" rel="stylesheet"/>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+<style>
+:root{
+  --p:#1a73e8;--pd:#1245a8;--pl:#e8f0fe;
+  --g:#00c896;--gd:#009e77;
+  --r:#e53935;--o:#f57c00;--y:#f9a825;
+  --pu:#6a1b9a;--pk:#e91e63;
+  --bg:#eef2ff;--s1:#fff;--s2:#f4f7fe;--s3:#eef1f8;
+  --br:#dde3f0;--tx:#1a1d2e;--t2:#5a6380;--t3:#9aa0b8;
+  --sh1:0 2px 12px rgba(26,115,232,.08);
+  --sh2:0 4px 24px rgba(26,115,232,.14);
+  --sh3:0 8px 48px rgba(26,115,232,.2);
+  --r1:18px;--r2:12px;--r3:8px;
+  --f:'Plus Jakarta Sans',sans-serif;
+  --fm:'Courier Prime',monospace;
+}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+body{font-family:var(--f);background:var(--bg);color:var(--tx);min-height:100vh;-webkit-font-smoothing:antialiased;overscroll-behavior:none}
+
+/* TOPBAR */
+.topbar{background:linear-gradient(135deg,#0c0f23 0%,#1a73e8 100%);padding:13px 14px 10px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:200;box-shadow:0 2px 20px rgba(12,15,35,.45)}
+.tb-left{display:flex;align-items:center;gap:9px}
+.tb-logo{width:38px;height:38px;background:rgba(255,255,255,.13);border-radius:11px;display:flex;align-items:center;justify-content:center;border:1.5px solid rgba(255,255,255,.22);overflow:hidden;cursor:pointer;flex-shrink:0;position:relative}
+.tb-logo img,.tb-logo-img{width:100%;height:100%;object-fit:cover;border-radius:10px}
+.tb-logo-badge{position:absolute;bottom:-2px;right:-2px;width:14px;height:14px;background:#00e5bb;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:7px;border:1.5px solid #0c0f23;color:#000}
+.tb-name{color:#fff;font-size:14.5px;font-weight:800;line-height:1.1;letter-spacing:-.2px}
+.tb-sub{color:rgba(255,255,255,.45);font-size:8px;font-weight:700;letter-spacing:.8px}
+.tb-right{display:flex;align-items:center;gap:7px}
+.tb-lang{background:rgba(255,255,255,.1);border:1px solid rgba(255,255,255,.2);color:#fff;font-family:var(--f);font-size:10px;font-weight:700;border-radius:7px;padding:5px 18px 5px 7px;cursor:pointer;outline:none;appearance:none;-webkit-appearance:none;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='8' height='5'%3E%3Cpath d='M0 0l4 5 4-5z' fill='white'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 5px center}
+.tb-lang option{background:#0c0f23}
+.menu-btn{width:34px;height:34px;background:rgba(255,255,255,.1);border:1px solid rgba(255,255,255,.2);border-radius:8px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px;cursor:pointer;padding:8px;-webkit-tap-highlight-color:transparent}
+.menu-btn span{display:block;width:16px;height:2px;background:#fff;border-radius:2px}
+
+/* SIDEBAR */
+.sob{position:fixed;inset:0;background:rgba(12,15,35,.65);z-index:300;display:none;backdrop-filter:blur(3px)}
+.sob.on{display:block}
+.sb{position:fixed;right:0;top:0;bottom:0;width:min(300px,87vw);background:#fff;z-index:301;transform:translateX(100%);transition:transform .25s cubic-bezier(.4,0,.2,1);display:flex;flex-direction:column;overflow-y:auto}
+.sb.on{transform:translateX(0)}
+.sb-head{background:linear-gradient(135deg,#0c0f23,#1a73e8);padding:18px 15px 14px;color:#fff;position:relative}
+.sb-head-title{font-size:15px;font-weight:800;margin-bottom:2px}
+.sb-head-sub{font-size:9px;color:rgba(255,255,255,.5);font-weight:700;letter-spacing:.6px}
+.sb-close{position:absolute;top:14px;right:12px;width:28px;height:28px;background:rgba(255,255,255,.15);border-radius:7px;border:none;color:#fff;font-size:15px;cursor:pointer;display:flex;align-items:center;justify-content:center}
+.sb-sec{padding:8px 12px 3px}
+.sb-sec-lbl{font-size:9px;font-weight:800;color:var(--t3);letter-spacing:.8px;text-transform:uppercase;margin-bottom:5px}
+.sb-item{display:flex;align-items:center;gap:10px;padding:10px 11px;border-radius:var(--r2);cursor:pointer;-webkit-tap-highlight-color:transparent;transition:background .13s;margin-bottom:2px}
+.sb-item:active,.sb-item:hover{background:var(--s2)}
+.sb-ico{width:32px;height:32px;border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:16px;flex-shrink:0}
+.sb-body{flex:1}
+.sb-t1{font-size:12.5px;font-weight:700;color:var(--tx)}
+.sb-t2{font-size:10px;color:var(--t3);font-weight:500;margin-top:1px}
+.badge{font-size:8.5px;font-weight:800;padding:2px 7px;border-radius:20px;white-space:nowrap}
+.b-soon{background:#fff3e0;color:#c75000}
+.b-new{background:#e8f5e9;color:#1b5e20}
+.b-prem{background:linear-gradient(90deg,#ffd700,#ff9800);color:#4a1f00}
+.b-on{background:var(--pl);color:var(--p)}
+.sb-div{height:1px;background:var(--br);margin:5px 12px}
+.sb-foot{padding:12px;margin-top:auto;text-align:center;font-size:8.5px;font-weight:700;color:var(--t3)}
+
+/* CHIPS */
+.chips-wrap{padding:8px 12px 2px}
+.chips-label{font-size:8.5px;font-weight:800;color:var(--t3);letter-spacing:.7px;text-transform:uppercase;margin-bottom:5px}
+.chips-scroll{display:flex;gap:5px;overflow-x:auto;scrollbar-width:none;padding-bottom:2px}
+.chips-scroll::-webkit-scrollbar{display:none}
+.chip{flex-shrink:0;background:#fff;border:1.5px solid var(--br);border-radius:20px;padding:5px 11px;font-size:10px;font-weight:700;color:var(--t2);cursor:pointer;transition:all .13s;white-space:nowrap;-webkit-tap-highlight-color:transparent;user-select:none}
+.chip.on{background:var(--p);border-color:var(--p);color:#fff}
+.chip:active{transform:scale(.94)}
+
+/* MAIN SCROLL */
+.wrap{padding:9px 12px 130px;max-width:480px;margin:0 auto}
+
+/* CARD */
+.card{background:#fff;border-radius:var(--r1);box-shadow:var(--sh1);border:1px solid var(--br);padding:14px 13px;margin-bottom:11px}
+.card-hd{display:flex;align-items:center;gap:8px;margin-bottom:11px}
+.card-ico{width:30px;height:30px;border-radius:8px;background:var(--pl);display:flex;align-items:center;justify-content:center;font-size:14px;flex-shrink:0}
+.card-title{font-size:13px;font-weight:800;color:var(--tx)}
+.card-sub{font-size:9.5px;color:var(--t3);font-weight:500}
+
+/* BIZ GRID */
+.biz-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:6px}
+.biz-btn{background:var(--s2);border:2px solid transparent;border-radius:var(--r3);padding:9px 3px 8px;display:flex;flex-direction:column;align-items:center;gap:3px;cursor:pointer;transition:all .14s;-webkit-tap-highlight-color:transparent;user-select:none}
+.biz-btn .be{font-size:18px;line-height:1}
+.biz-btn .bl{font-size:9px;font-weight:700;color:var(--t2);text-align:center;line-height:1.2}
+.biz-btn.on{background:var(--pl);border-color:var(--p)}
+.biz-btn.on .bl{color:var(--p)}
+.biz-btn:active{transform:scale(.92)}
+
+/* SCHOOL SUB-TYPE */
+.sub-tabs{display:flex;gap:5px;margin-bottom:10px}
+.sub-tab{flex:1;padding:8px 4px;border-radius:var(--r3);border:2px solid var(--br);background:var(--s2);font-family:var(--f);font-size:10.5px;font-weight:700;color:var(--t2);cursor:pointer;text-align:center;transition:all .13s;-webkit-tap-highlight-color:transparent}
+.sub-tab.on{background:var(--pl);border-color:var(--p);color:var(--p)}
+
+/* FORM */
+.fg{margin-bottom:9px}
+.fl{font-size:11px;font-weight:700;color:var(--t2);margin-bottom:4px;display:block}
+.fi,.fs{width:100%;background:var(--s2);border:1.5px solid var(--br);border-radius:var(--r2);padding:10px 11px;font-family:var(--f);font-size:12.5px;font-weight:500;color:var(--tx);outline:none;transition:border-color .13s,box-shadow .13s,background .13s;-webkit-appearance:none;appearance:none}
+.fi:focus,.fs:focus{border-color:var(--p);background:#fff;box-shadow:0 0 0 3px rgba(26,115,232,.1)}
+.fi::placeholder{color:var(--t3);font-weight:400}
+.g2{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.g3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:7px}
+.fs{background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='9' height='5'%3E%3Cpath d='M0 0l4.5 5 4.5-5z' fill='%235a6380'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 9px center;padding-right:24px}
+textarea.fi{resize:none;min-height:56px}
+.ctx{display:none}.ctx.on{display:block}
+.hr{height:1px;background:var(--br);margin:9px 0}
+
+/* PAY STATUS */
+.ps-row{display:flex;gap:6px;margin-top:5px}
+.ps-btn{flex:1;padding:9px 3px;border-radius:var(--r3);border:2px solid transparent;font-family:var(--f);font-size:10.5px;font-weight:800;cursor:pointer;transition:all .13s;text-align:center;-webkit-tap-highlight-color:transparent}
+.ps-paid{background:#e8f5e9;border-color:#a5d6a7;color:#1b5e20}
+.ps-unpaid{background:#fff3e0;border-color:#ffe082;color:#bf5000}
+.ps-due{background:#fce4ec;border-color:#f48fb1;color:#880e4f}
+.ps-btn.sel.ps-paid{background:#1b5e20;color:#fff;border-color:#1b5e20}
+.ps-btn.sel.ps-unpaid{background:#e65100;color:#fff;border-color:#e65100}
+.ps-btn.sel.ps-due{background:#880e4f;color:#fff;border-color:#880e4f}
+
+/* LOGO UPLOAD */
+.logo-area{display:flex;align-items:center;gap:11px;padding:10px 12px;background:var(--s2);border-radius:var(--r2);border:1.5px dashed var(--br);cursor:pointer;transition:all .13s}
+.logo-area:active{background:var(--pl);border-color:var(--p)}
+.logo-prev{width:42px;height:42px;border-radius:9px;background:#fff;border:1.5px solid var(--br);display:flex;align-items:center;justify-content:center;font-size:20px;overflow:hidden;flex-shrink:0}
+.logo-prev img{width:100%;height:100%;object-fit:cover}
+.logo-txt .t1{font-size:11.5px;font-weight:700;color:var(--tx)}
+.logo-txt .t2{font-size:9.5px;color:var(--t3);font-weight:500;margin-top:1px}
+.photo-area{display:flex;align-items:center;gap:9px;padding:8px 11px;background:#fffde7;border-radius:var(--r2);border:1.5px solid #ffe082;cursor:default;margin-top:8px}
+.prem-badge{background:linear-gradient(90deg,#ffd700,#ff9800);color:#4a1f00;font-size:7.5px;font-weight:800;padding:2px 6px;border-radius:20px;margin-left:4px}
+
+/* SALARY CALC BOX */
+.salary-calc{background:linear-gradient(135deg,#e8f0fe,#f0f4ff);border-radius:var(--r2);padding:10px 12px;margin-top:6px;border:1.5px solid #c5d9fd}
+.salary-row{display:flex;justify-content:space-between;align-items:center;padding:3px 0;font-size:11.5px}
+.salary-row.total{border-top:1.5px solid var(--p);margin-top:5px;padding-top:6px;font-weight:800;color:var(--p);font-size:13px}
+.salary-row span:first-child{color:var(--t2);font-weight:600}
+.salary-row span:last-child{font-weight:700;color:var(--tx)}
+.salary-row.total span{color:var(--p)}
+
+/* ITEMS */
+.items-list{display:flex;flex-direction:column;gap:8px}
+.item-row{background:var(--s2);border-radius:var(--r2);border:1.5px solid var(--br);padding:10px;transition:border-color .13s}
+.item-row:focus-within{border-color:var(--p)}
+.ir-head{display:flex;align-items:center;justify-content:space-between;margin-bottom:8px}
+.ir-num{font-size:9.5px;font-weight:800;color:var(--p);background:var(--pl);border-radius:5px;padding:2px 6px}
+.ir-tot{font-size:13.5px;font-weight:800;color:var(--gd)}
+.ir-fields{display:grid;grid-template-columns:1fr 1fr;gap:6px}
+.ir-full{grid-column:1/-1}
+.rm-btn{width:100%;margin-top:7px;background:#fff0f0;border:1.5px solid #ffcdd2;border-radius:var(--r3);padding:6px;font-family:var(--f);font-size:10.5px;font-weight:700;color:var(--r);cursor:pointer;transition:all .12s;-webkit-tap-highlight-color:transparent}
+.rm-btn:active{background:#ffcdd2}
+.add-row-btn{width:100%;margin-top:4px;background:var(--pl);border:2px dashed var(--p);border-radius:var(--r2);padding:12px;font-family:var(--f);font-size:13px;font-weight:800;color:var(--p);cursor:pointer;-webkit-tap-highlight-color:transparent;display:flex;align-items:center;justify-content:center;gap:5px;transition:all .13s}
+.add-row-btn:active{background:#c5d9fd}
+
+/* TOTALS */
+.totals-panel{background:linear-gradient(135deg,#0c0f23 0%,#1e3a6e 100%);border-radius:var(--r1);padding:14px 13px;margin-bottom:11px;color:#fff}
+.tp-title{font-size:9.5px;font-weight:800;color:rgba(255,255,255,.45);letter-spacing:.9px;text-transform:uppercase;margin-bottom:11px}
+.tp-row{display:flex;justify-content:space-between;padding:4px 0;border-bottom:1px solid rgba(255,255,255,.07)}
+.tp-row:last-of-type{border:none}
+.tp-lbl{font-size:12px;font-weight:500;color:rgba(255,255,255,.7)}
+.tp-val{font-size:12.5px;font-weight:800;color:#fff}
+.tp-disc .tp-val{color:#ffb74d}
+.tp-gst .tp-val{color:#80cbc4}
+.tp-grand{display:flex;justify-content:space-between;align-items:center;margin-top:9px;background:rgba(255,255,255,.1);border-radius:var(--r2);padding:11px 12px;border:1px solid rgba(255,255,255,.14)}
+.tp-grand-lbl{font-size:13px;font-weight:800;color:rgba(255,255,255,.9)}
+.tp-grand-val{font-size:21px;font-weight:800;color:#00e5bb;letter-spacing:-.5px}
+.adj-w{position:relative}
+.adj-w .fi{padding-right:30px}
+.adj-u{position:absolute;right:10px;top:50%;transform:translateY(-50%);font-size:12px;font-weight:800;color:var(--t3);pointer-events:none}
+
+/* BTNS */
+.actions{display:flex;flex-direction:column;gap:7px;margin-bottom:11px}
+.btn{width:100%;border:none;border-radius:var(--r2);padding:14px;font-family:var(--f);font-size:14px;font-weight:800;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:7px;transition:all .13s;-webkit-tap-highlight-color:transparent}
+.btn:active{transform:scale(.97)}
+.btn-p{background:linear-gradient(135deg,var(--p),#5b6bff);color:#fff;box-shadow:0 4px 16px rgba(26,115,232,.28)}
+.btn-g{background:linear-gradient(135deg,var(--g),#009e77);color:#fff;box-shadow:0 4px 14px rgba(0,200,150,.25)}
+.btn-o{background:linear-gradient(135deg,#e65100,#f9a825);color:#fff;box-shadow:0 3px 14px rgba(230,81,0,.22)}
+.btn-out{background:#fff;border:2px solid var(--br);color:var(--t2)}
+.btn-pu{background:linear-gradient(135deg,#4a148c,#ab47bc);color:#fff}
+
+/* LEDGER */
+.ledger-list{display:flex;flex-direction:column;gap:7px;max-height:300px;overflow-y:auto}
+.ledger-empty{text-align:center;padding:20px;color:var(--t3);font-size:12.5px;font-weight:500}
+.li{background:var(--s2);border:1.5px solid var(--br);border-radius:var(--r2);padding:10px;cursor:pointer;-webkit-tap-highlight-color:transparent;display:flex;justify-content:space-between;align-items:center;gap:8px;transition:all .13s}
+.li:active{background:var(--pl);border-color:var(--p)}
+.li-left .li-biz{font-size:12px;font-weight:700;color:var(--tx)}
+.li-left .li-meta{font-size:9.5px;color:var(--t3);font-weight:500;margin-top:1px}
+.li-right{text-align:right}
+.li-amt{font-size:13.5px;font-weight:800;color:var(--gd);white-space:nowrap}
+.li-st{font-size:8px;font-weight:800;padding:2px 6px;border-radius:20px;display:inline-block;margin-top:2px}
+.st-paid{background:#e8f5e9;color:#1b5e20}
+.st-unpaid{background:#fff3e0;color:#bf5000}
+.st-due{background:#fce4ec;color:#880e4f}
+
+/* TOAST */
+.toast{position:fixed;bottom:84px;left:50%;transform:translateX(-50%) translateY(12px);background:#0c0f23;color:#fff;font-size:11.5px;font-weight:700;padding:9px 18px;border-radius:50px;opacity:0;pointer-events:none;transition:all .2s;z-index:600;white-space:nowrap;box-shadow:0 4px 16px rgba(0,0,0,.25)}
+.toast.on{opacity:1;transform:translateX(-50%) translateY(0)}
+
+/* SAVING OVERLAY */
+.sov{display:none;position:fixed;inset:0;background:rgba(12,15,35,.7);z-index:700;flex-direction:column;align-items:center;justify-content:center;gap:12px;color:#fff;font-size:13.5px;font-weight:700}
+.sov.on{display:flex}
+.sov-spin{width:40px;height:40px;border:4px solid rgba(255,255,255,.15);border-top-color:#00e5bb;border-radius:50%;animation:sp .6s linear infinite}
+@keyframes sp{to{transform:rotate(360deg)}}
+
+/* MODAL */
+.modal{display:none;position:fixed;inset:0;z-index:400;background:rgba(12,15,35,.8);backdrop-filter:blur(4px);overflow-y:auto;padding:12px 10px}
+.modal.on{display:block}
+.modal-box{max-width:480px;margin:0 auto 14px;border-radius:var(--r1);overflow:hidden;box-shadow:var(--sh3)}
+.modal-acts{display:flex;flex-direction:column;gap:7px;max-width:480px;margin:0 auto;padding:0 0 20px}
+
+/* CENTERED MODAL */
+.cmodal{display:none;position:fixed;inset:0;z-index:500;background:rgba(12,15,35,.8);backdrop-filter:blur(5px);align-items:center;justify-content:center;padding:18px}
+.cmodal.on{display:flex}
+.cmodal-box{background:#fff;border-radius:var(--r1);width:100%;max-width:400px;overflow:hidden;box-shadow:var(--sh3);max-height:90vh;overflow-y:auto}
+.cmodal-head{background:linear-gradient(135deg,#0c0f23,#1a73e8);color:#fff;padding:18px 16px 14px;position:relative}
+.cmodal-head-title{font-size:16px;font-weight:800;margin-bottom:2px}
+.cmodal-head-sub{font-size:10px;color:rgba(255,255,255,.5);font-weight:600}
+.cmodal-close{position:absolute;top:12px;right:12px;width:26px;height:26px;background:rgba(255,255,255,.15);border-radius:6px;border:none;color:#fff;font-size:14px;cursor:pointer}
+.cmodal-body{padding:16px}
+
+/* UPCOMING */
+.upm-item{display:flex;align-items:center;gap:10px;padding:11px 15px;border-bottom:1px solid var(--br)}
+.upm-item:last-child{border:none}
+.upm-ico{font-size:20px;width:32px;text-align:center}
+.upm-t1{font-size:12.5px;font-weight:700;color:var(--tx)}
+.upm-t2{font-size:10px;color:var(--t2);font-weight:500;margin-top:1px}
+.eta{font-size:8.5px;font-weight:800;padding:2px 7px;border-radius:20px;white-space:nowrap;flex-shrink:0}
+.eta-3{background:#e8f5e9;color:#1b5e20}
+.eta-5{background:#e8f0fe;color:var(--p)}
+.eta-7{background:#fff3e0;color:#c75000}
+.eta-14{background:#fce4ec;color:#880e4f}
+
+/* PLANS */
+.plans-grid{display:flex;flex-direction:column;gap:10px;padding:14px}
+.plan-card{border-radius:var(--r2);padding:14px;border:2px solid var(--br);position:relative;overflow:hidden}
+.plan-card.featured{border-color:var(--p);background:linear-gradient(135deg,#e8f0fe,#f0f4ff)}
+.plan-badge{position:absolute;top:10px;right:10px;font-size:8.5px;font-weight:800;padding:2px 8px;border-radius:20px;background:var(--p);color:#fff}
+.plan-price{font-size:22px;font-weight:800;color:var(--tx);margin-bottom:1px}
+.plan-price span{font-size:12px;color:var(--t2);font-weight:600}
+.plan-name{font-size:11px;font-weight:700;color:var(--t2);margin-bottom:8px}
+.plan-features{list-style:none;display:flex;flex-direction:column;gap:4px}
+.plan-features li{font-size:11px;color:var(--t2);font-weight:500;display:flex;align-items:center;gap:5px}
+.plan-features li::before{content:'✓';color:var(--g);font-weight:800;font-size:11px}
+.plan-btn{width:100%;margin-top:10px;border-radius:var(--r3);padding:10px;font-family:var(--f);font-size:12px;font-weight:800;cursor:pointer;border:none;-webkit-tap-highlight-color:transparent}
+
+/* FEEDBACK */
+.star-row{display:flex;gap:7px;margin-bottom:13px}
+.star{font-size:26px;cursor:pointer;transition:transform .1s;-webkit-tap-highlight-color:transparent;filter:grayscale(1) opacity(.4)}
+.star.on{filter:none;transform:scale(1.1)}
+.fb-reviews{display:flex;flex-direction:column;gap:7px;margin-top:10px}
+.fb-rev{background:var(--s2);border-radius:var(--r3);padding:9px 11px}
+.fb-rev-head{display:flex;align-items:center;justify-content:space-between;margin-bottom:3px}
+.fb-rev-name{font-size:11.5px;font-weight:700;color:var(--tx)}
+.fb-rev-stars{font-size:11px}
+.fb-rev-text{font-size:11px;color:var(--t2);font-weight:500}
+
+/* SCROLLBAR */
+.ledger-list::-webkit-scrollbar{width:3px}
+.ledger-list::-webkit-scrollbar-track{background:var(--s2);border-radius:6px}
+.ledger-list::-webkit-scrollbar-thumb{background:var(--br);border-radius:6px}
+
+/* ============ RECEIPT STYLES ============ */
+/* Common receipt base */
+#receiptContent{font-family:var(--f);background:#fff}
+.r-body{padding:13px}
+.r-sec{font-size:8.5px;font-weight:800;color:var(--t3);text-transform:uppercase;letter-spacing:.8px;margin:10px 0 5px}
+.r-table{width:100%;border-collapse:collapse;font-size:11.5px}
+.r-table th{padding:5px;font-size:9px;font-weight:800;text-align:left}
+.r-table th:last-child,.r-table td:last-child{text-align:right}
+.r-table td{padding:5px;border-bottom:1px solid var(--br);font-size:11.5px}
+.r-table td.am{font-weight:700}
+.r-cbox{border-radius:8px;padding:9px 11px;display:grid;grid-template-columns:1fr 1fr;gap:4px 9px;margin-bottom:4px}
+.rcf{}.rcf-l{font-size:8.5px;font-weight:700;text-transform:uppercase;letter-spacing:.2px}.rcf-v{font-size:11.5px;font-weight:700;margin-top:1px}
+.rcf-full{grid-column:1/-1}
+.r-tots{border-radius:7px;padding:8px 10px;margin-top:8px}
+.r-tr{display:flex;justify-content:space-between;font-size:11.5px;padding:3px 0;font-weight:600}
+.r-grand{display:flex;justify-content:space-between;align-items:center;border-radius:7px;padding:10px 12px;margin-top:6px;color:#fff}
+.r-grand-l{font-size:12px;font-weight:800}
+.r-grand-v{font-size:19px;font-weight:800}
+.r-status{display:inline-block;padding:3px 10px;border-radius:5px;font-size:9.5px;font-weight:800;margin-top:6px;text-transform:uppercase;letter-spacing:.4px}
+.r-notes-box{border-radius:6px;padding:8px 10px;margin-top:8px;font-size:11px;font-style:italic;border-left:3px solid}
+.r-foot{text-align:center;padding:9px 13px 12px;border-top:1px solid var(--br);font-size:8.5px;color:var(--t3);font-weight:700}
+
+/* 1. DIGITAL PREMIUM */
+.rd .r-head{background:linear-gradient(135deg,#0c0f23,#1a73e8);color:#fff;padding:20px 17px 14px}
+.rd .r-head-top{display:flex;align-items:center;gap:10px;margin-bottom:8px}
+.rd .r-logo{width:44px;height:44px;background:rgba(255,255,255,.14);border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:22px;overflow:hidden;flex-shrink:0;border:1.5px solid rgba(255,255,255,.2)}
+.rd .r-logo img{width:100%;height:100%;object-fit:cover}
+.rd .r-biz{font-size:17px;font-weight:800;letter-spacing:-.3px}
+.rd .r-tag{font-size:9.5px;color:rgba(255,255,255,.55);margin-top:1px}
+.rd .r-meta{background:rgba(255,255,255,.1);border-radius:7px;padding:7px 11px;display:flex;justify-content:space-between;font-size:10px;color:rgba(255,255,255,.82);font-weight:700}
+.rd .r-cbox{background:var(--s2)}.rd .rcf-l{color:var(--t3)}.rd .rcf-v{color:var(--tx)}
+.rd .r-table th{background:var(--s3);color:var(--t2)}
+.rd .r-tots{background:var(--s2)}.rd .r-tr{color:var(--t2)}.rd .r-tr.disc{color:#e65100}.rd .r-tr.gst{color:#00695c}
+.rd .r-grand{background:linear-gradient(135deg,#0c0f23,#1e3a6e)}.rd .r-grand-v{color:#00e5bb}
+.rd .r-notes-box{background:#fffde7;color:#5d4037;border-color:#f9a825}
+
+/* 2. NORMAL PAPER (Kaccha) */
+.rk{background:#fdf6e3;font-family:var(--fm);position:relative}
+.rk::before{content:'';position:absolute;inset:0;background:repeating-linear-gradient(0deg,transparent,transparent 23px,rgba(0,0,0,.035) 23px,rgba(0,0,0,.035) 24px);pointer-events:none}
+.torn{height:15px;position:relative;z-index:1}
+.torn-t{background:radial-gradient(ellipse 5px 7px at 5px 0,transparent 100%,#fdf6e3 0) repeat-x top/10px 15px}
+.torn-b{background:radial-gradient(ellipse 5px 7px at 5px 100%,transparent 100%,#fdf6e3 0) repeat-x bottom/10px 15px}
+.rk .r-head{padding:4px 15px 9px;text-align:center;position:relative;z-index:1}
+.rk .r-biz{font-size:16px;font-weight:700;color:#1a1200;text-transform:uppercase;border-bottom:2px solid #1a1200;display:inline-block;padding-bottom:1px;margin-bottom:3px}
+.rk .r-tag{font-size:10px;color:#5a4a00}
+.rk .r-meta{display:flex;justify-content:space-between;font-size:10px;color:#3a2a00;border-top:1px dashed #b09050;border-bottom:1px dashed #b09050;padding:4px 0;margin:4px 0}
+.rk .r-body-wrap{padding:5px 15px;position:relative;z-index:1}
+.rk .r-sec{color:#5a4000;border-bottom:1px solid #c9b070;padding-bottom:2px}
+.rk .r-cline{font-size:11px;color:#2a1a00;padding:2px 0;display:flex;gap:4px}
+.rk .r-cline b{font-weight:700;min-width:65px;color:#5a3a00}
+.rk .r-table th{color:#3a2200;border-bottom:2px solid #7a6030;background:none}
+.rk .r-table td{border-bottom:1px dotted #c0a860;color:#1a1000;background:none}
+.rk .r-tots-box{border-top:2px dashed #7a6030;margin-top:5px;padding-top:5px}
+.rk .r-tr{color:#3a2a00}.rk .r-tr.disc{color:#7a2000}.rk .r-tr.gst{color:#004a30}
+.rk .r-grand-kaccha{display:flex;justify-content:space-between;border-top:2px solid #1a1200;border-bottom:2px solid #1a1200;margin-top:5px;padding:6px 0}
+.rk .r-grand-kaccha-l{font-size:13px;font-weight:700;text-transform:uppercase;color:#1a1200}
+.rk .r-grand-kaccha-v{font-size:16px;font-weight:700;color:#1a1200}
+.rk .r-stamp{position:absolute;top:40px;right:10px;width:60px;height:60px;border:3px solid rgba(180,40,40,.32);border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:8px;font-weight:700;color:rgba(180,40,40,.4);text-align:center;line-height:1.3;transform:rotate(-15deg);pointer-events:none;z-index:2;text-transform:uppercase;font-family:var(--f)}
+.rk .r-wm{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%) rotate(-30deg);font-size:34px;font-weight:800;color:rgba(180,140,0,.05);pointer-events:none;z-index:0;white-space:nowrap;font-family:var(--f);text-transform:uppercase}
+.rk .r-foot{color:#7a6030;border-top:1px dashed #c0a860;position:relative;z-index:1}
+
+/* 3. THERMAL ROLL (Authentic POS) */
+.rt{background:#fff;font-family:var(--fm)}
+.rt .perf{height:7px;background:repeating-linear-gradient(90deg,#ccc 0,#ccc 4px,#fff 4px,#fff 9px)}
+.rt .r-head{padding:9px 14px 6px;text-align:center;border-bottom:2px solid #000}
+.rt .r-biz{font-size:15px;font-weight:700;text-transform:uppercase;letter-spacing:.6px;color:#000}
+.rt .r-tag{font-size:9.5px;color:#333;margin:1px 0 4px}
+.rt .r-meta{display:flex;justify-content:space-between;font-size:9.5px;color:#000;border-top:1px solid #000;padding-top:3px}
+.rt .r-body-wrap{padding:6px 14px}
+.rt .r-sec{background:#000;color:#fff;padding:2px 0;text-align:center;letter-spacing:.3px}
+.rt .r-cline{font-size:10.5px;color:#000;padding:2px 0;display:flex;gap:4px}
+.rt .r-cline b{font-weight:700;min-width:60px}
+.rt .r-table th{border-top:1px solid #000;border-bottom:1px solid #000;color:#000;background:none}
+.rt .r-table td{border-bottom:1px dashed #999;color:#000;background:none}
+.rt .r-tots-box{border-top:1px solid #000;margin-top:4px;padding-top:4px}
+.rt .r-tr{color:#000;font-size:10.5px}
+.rt .r-grand-th{display:flex;justify-content:space-between;border-top:2px solid #000;border-bottom:2px solid #000;margin-top:4px;padding:5px 0}
+.rt .r-grand-th-l{font-size:13px;font-weight:700;text-transform:uppercase;color:#000}
+.rt .r-grand-th-v{font-size:15px;font-weight:700;color:#000}
+.rt .r-bc{font-size:20px;letter-spacing:-1.5px;color:#000;line-height:1;margin:3px 0 1px;text-align:center}
+.rt .r-foot{color:#444;border-top:1px dashed #bbb}
+
+/* 4. NEW THERMAL COLLECTION */
+.rnt{background:#f8f8f0;font-family:var(--fm);border:1px solid #ccc}
+.rnt .perf{height:8px;background:repeating-linear-gradient(90deg,#bbb 0,#bbb 3px,#f8f8f0 3px,#f8f8f0 8px)}
+.rnt .r-head{padding:10px 15px 7px;text-align:center}
+.rnt .r-biz{font-size:15px;font-weight:700;text-transform:uppercase;border-bottom:3px double #000;display:inline-block;padding-bottom:2px;margin-bottom:3px;color:#000}
+.rnt .r-tag{font-size:10px;color:#444;margin-bottom:5px}
+.rnt .r-meta{display:flex;justify-content:space-between;font-size:9.5px;color:#000;border-top:1px dotted #000;border-bottom:1px dotted #000;padding:3px 0}
+.rnt .r-body-wrap{padding:6px 15px}
+.rnt .r-sec{color:#000;border-left:3px solid #000;padding-left:5px}
+.rnt .r-cline{font-size:10.5px;color:#000;padding:2px 0;display:flex;gap:4px}
+.rnt .r-cline b{font-weight:700;min-width:60px}
+.rnt .r-table th{background:#000;color:#fff}
+.rnt .r-table td{border-bottom:1px dotted #999;color:#000;background:none}
+.rnt .r-tots-box{background:#ececec;padding:5px 8px;margin-top:5px}
+.rnt .r-tr{color:#000;font-size:10.5px}
+.rnt .r-grand-nt{display:flex;justify-content:space-between;background:#000;color:#f8f8f0;padding:7px 10px;margin-top:5px}
+.rnt .r-grand-nt-l{font-size:13px;font-weight:700}
+.rnt .r-grand-nt-v{font-size:15px;font-weight:700}
+.rnt .r-foot{color:#555;border-top:1px dotted #aaa}
+
+/* 5. MEDICAL / PRESCRIPTION */
+.rm{background:#fff;border:2px solid #1565c0}
+.rm .r-head{background:linear-gradient(135deg,#1565c0,#42a5f5);color:#fff;padding:14px 16px 11px}
+.rm .r-rx{font-size:24px;font-weight:800;font-style:italic;font-family:serif;float:left;margin-right:8px;line-height:1}
+.rm .r-biz{font-size:14px;font-weight:800}
+.rm .r-tag{font-size:9.5px;color:rgba(255,255,255,.65);clear:both}
+.rm .r-meta{background:rgba(255,255,255,.12);padding:5px 10px;display:flex;justify-content:space-between;font-size:9.5px;color:rgba(255,255,255,.85);font-weight:700;margin-top:7px;border-radius:5px}
+.rm .r-cbox{background:#e3f2fd;border-left:4px solid #1565c0;border-radius:0 6px 6px 0}
+.rm .rcf-l{color:#1565c0}.rm .rcf-v{color:#0d1a2e}
+.rm .r-table th{background:#1565c0;color:#fff}
+.rm .r-table td:nth-child(odd){background:#f8fcff}
+.rm .r-tots{background:#e8f5e9}.rm .r-tr{color:#1b5e20}.rm .r-tr.disc{color:#b71c1c}.rm .r-tr.gst{color:#006064}
+.rm .r-grand{background:#1565c0}.rm .r-grand-v{color:#b3e5fc}
+.rm .r-notes-box{background:#fffde7;color:#5d4037;border-color:#ff8f00}
+.rm .r-foot{border-top:2px dashed #90caf9;color:#1565c0}
+
+/* 6. AUTO JOB CARD */
+.ra{background:#fff}
+.ra .r-head{background:linear-gradient(135deg,#212121,#f57c00);color:#fff;padding:13px 14px 10px}
+.ra .r-head-top{display:flex;align-items:center;gap:8px}
+.ra .r-biz{font-size:14px;font-weight:800}
+.ra .r-tag{font-size:9px;color:rgba(255,255,255,.6)}
+.ra .r-meta{background:rgba(255,255,255,.12);border-radius:5px;padding:5px 10px;display:flex;justify-content:space-between;font-size:9.5px;color:rgba(255,255,255,.85);font-weight:700;margin-top:7px}
+.ra .r-cbox{background:#fff3e0;border:2px solid #f57c00;border-radius:6px}
+.ra .rcf-l{color:#bf360c}.ra .rcf-v{color:#212121}
+.ra .r-table th{background:#212121;color:#fff}
+.ra .r-table td:nth-child(even){background:#fff8f0}
+.ra .r-tots{background:#fbe9e7}.ra .r-tr{color:#bf360c}.ra .r-tr.gst{color:#1b5e20}
+.ra .r-grand{background:linear-gradient(135deg,#212121,#f57c00)}.ra .r-grand-v{color:#ffe082}
+.ra .r-notes-box{background:#fff8f0;color:#5d4037;border-color:#f57c00}
+.ra .r-sign-row{display:flex;justify-content:space-between;margin-top:12px;padding-top:9px;border-top:1px dashed #aaa}
+.ra .r-sign-item{text-align:center;flex:1}
+.ra .r-sign-line{border-top:1px solid #000;width:75%;margin:18px auto 2px}
+.ra .r-sign-lbl{font-size:8.5px;font-weight:700;color:#555;text-transform:uppercase}
+.ra .r-foot{border-top:1px solid #ffe0b2;color:#888}
+
+/* 7. BOUTIQUE */
+.rb-style{background:linear-gradient(180deg,#fdf9f0,#fff)}
+.rb-style .r-head{background:linear-gradient(135deg,#4a148c,#ab47bc);color:#fff;padding:18px 16px 13px;text-align:center;position:relative;overflow:hidden}
+.rb-style .r-head::after{content:'✦ ✦ ✦';position:absolute;bottom:5px;left:50%;transform:translateX(-50%);font-size:9px;color:rgba(255,255,255,.28);letter-spacing:5px}
+.rb-style .r-biz{font-size:18px;font-weight:800}
+.rb-style .r-tag{font-size:9.5px;color:rgba(255,255,255,.58);margin:2px 0 8px}
+.rb-style .r-meta{background:rgba(255,255,255,.12);border-radius:6px;padding:6px 11px;display:flex;justify-content:space-between;font-size:9.5px;color:rgba(255,255,255,.85);font-weight:700}
+.rb-style .r-cbox{background:linear-gradient(135deg,#f3e5f5,#ede7f6);border:1px solid #ce93d8}
+.rb-style .rcf-l{color:#6a1b9a}.rb-style .rcf-v{color:#1a0030}
+.rb-style .r-table th{background:linear-gradient(90deg,#4a148c,#7b1fa2);color:#fff}
+.rb-style .r-table td:nth-child(even){background:#f9f0ff}
+.rb-style .r-tots{background:linear-gradient(135deg,#f3e5f5,#ede7f6);border:1px solid #ce93d8}
+.rb-style .r-tr{color:#4a148c}.rb-style .r-tr.disc{color:#b71c1c}.rb-style .r-tr.gst{color:#1b5e20}
+.rb-style .r-grand{background:linear-gradient(135deg,#4a148c,#ab47bc)}.rb-style .r-grand-v{color:#f8bbd9}
+.rb-style .r-notes-box{background:#fff8e1;color:#5d4037;border-color:#ab47bc}
+.rb-style .r-foot{border-top:1px solid #e1bee7;color:#7b1fa2}
+
+/* 8. SCHOOL FEES RECEIPT */
+.rsch{background:#fff;border:2px solid #1a237e}
+.rsch .r-head{background:linear-gradient(135deg,#1a237e,#3949ab);color:#fff;padding:15px 16px 11px;text-align:center}
+.rsch .r-logo-big{font-size:26px;margin-bottom:4px}
+.rsch .r-biz{font-size:15px;font-weight:800}
+.rsch .r-tag{font-size:9.5px;color:rgba(255,255,255,.58);margin:2px 0 7px}
+.rsch .r-meta{background:rgba(255,255,255,.12);border-radius:5px;padding:6px 10px;display:flex;justify-content:space-between;font-size:9.5px;color:rgba(255,255,255,.85);font-weight:700}
+.rsch .r-cbox{background:#e8eaf6;border-left:4px solid #1a237e;border-radius:0 6px 6px 0}
+.rsch .rcf-l{color:#1a237e}.rsch .rcf-v{color:#0d1a2e}
+.rsch .r-table th{background:#1a237e;color:#fff}
+.rsch .r-table td:nth-child(even){background:#f5f5ff}
+.rsch .r-tots{background:#e8eaf6}.rsch .r-tr{color:#283593}
+.rsch .r-grand{background:#1a237e}.rsch .r-grand-v{color:#c5cae9}
+.rsch .r-notes-box{background:#e8eaf6;color:#1a237e;border-color:#3949ab}
+.rsch .r-sign-row{display:flex;justify-content:space-between;margin-top:12px;padding-top:9px;border-top:1px dashed #9fa8da}
+.rsch .r-sign-item{text-align:center;flex:1}
+.rsch .r-sign-line{border-top:1px solid #000;width:75%;margin:18px auto 2px}
+.rsch .r-sign-lbl{font-size:8.5px;font-weight:700;color:#555;text-transform:uppercase}
+.rsch .r-foot{border-top:2px dashed #9fa8da;color:#1a237e}
+
+/* 9. SALARY SLIP */
+.rsal{background:#fff;border:2px solid #263238}
+.rsal .r-head{background:linear-gradient(135deg,#263238,#37474f);color:#fff;padding:15px 16px 11px}
+.rsal .r-head-top{display:flex;align-items:center;gap:10px}
+.rsal .r-biz{font-size:15px;font-weight:800}
+.rsal .r-tag{font-size:9.5px;color:rgba(255,255,255,.58)}
+.rsal .r-meta{background:rgba(255,255,255,.1);border-radius:5px;padding:6px 10px;display:flex;justify-content:space-between;font-size:9.5px;color:rgba(255,255,255,.85);font-weight:700;margin-top:8px}
+.rsal .r-slip-title{background:#eceff1;border-radius:0;padding:7px;text-align:center;font-size:12px;font-weight:800;color:#263238;text-transform:uppercase;letter-spacing:.8px;border-bottom:2px solid #b0bec5}
+.rsal .r-emp-box{background:#f5f5f5;border:1.5px solid #cfd8dc;border-radius:6px;padding:10px 12px;display:grid;grid-template-columns:1fr 1fr;gap:4px 10px;margin:9px 0}
+.rsal .rcf-l{color:#546e7a}.rsal .rcf-v{color:#263238}
+.rsal .sal-grid{display:grid;grid-template-columns:1fr 1fr;gap:0;border:1.5px solid #cfd8dc;border-radius:6px;overflow:hidden}
+.rsal .sal-col-head{background:#263238;color:#fff;font-size:10px;font-weight:800;padding:6px 10px;text-align:center;text-transform:uppercase;letter-spacing:.4px}
+.rsal .sal-col{border-right:1px solid #cfd8dc}
+.rsal .sal-col:last-child{border-right:none}
+.rsal .sal-row{display:flex;justify-content:space-between;padding:5px 10px;border-bottom:1px solid #eceff1;font-size:11px}
+.rsal .sal-row:last-child{border-bottom:none}
+.rsal .sal-row span:first-child{color:#546e7a;font-weight:500}
+.rsal .sal-row span:last-child{font-weight:700;color:#263238}
+.rsal .sal-net{background:#263238;color:#fff;padding:11px 12px;display:flex;justify-content:space-between;align-items:center;margin-top:8px;border-radius:6px}
+.rsal .sal-net-l{font-size:12px;font-weight:700}
+.rsal .sal-net-v{font-size:19px;font-weight:800;color:#80cbc4}
+.rsal .sal-words{font-size:10px;color:#546e7a;font-style:italic;margin-top:6px;padding:6px 10px;background:#eceff1;border-radius:5px}
+.rsal .r-sign-row{display:flex;justify-content:space-between;margin-top:13px;padding-top:9px;border-top:1px dashed #aaa}
+.rsal .r-sign-item{text-align:center;flex:1}
+.rsal .r-sign-line{border-top:1px solid #000;width:75%;margin:18px auto 2px}
+.rsal .r-sign-lbl{font-size:8.5px;font-weight:700;color:#555;text-transform:uppercase}
+.rsal .r-foot{border-top:2px solid #263238;color:#546e7a;font-size:8.5px}
+
+/* 10. GROCERY */
+.rgr{background:#fff}
+.rgr .r-head{background:linear-gradient(135deg,#1b5e20,#43a047);color:#fff;padding:15px 16px 11px;text-align:center}
+.rgr .r-biz{font-size:16px;font-weight:800}
+.rgr .r-tag{font-size:9.5px;color:rgba(255,255,255,.58);margin:2px 0 7px}
+.rgr .r-meta{background:rgba(255,255,255,.12);border-radius:5px;padding:5px 10px;display:flex;justify-content:space-between;font-size:9.5px;color:rgba(255,255,255,.85);font-weight:700}
+.rgr .r-cbox{background:#e8f5e9;border:1px solid #a5d6a7}.rgr .rcf-l{color:#1b5e20}.rgr .rcf-v{color:#0d2010}
+.rgr .r-table th{background:#2e7d32;color:#fff}
+.rgr .r-table td:nth-child(even){background:#f1f8f1}
+.rgr .r-tots{background:#e8f5e9}.rgr .r-tr{color:#1b5e20}
+.rgr .r-grand{background:linear-gradient(135deg,#1b5e20,#43a047)}.rgr .r-grand-v{color:#b9f6ca}
+.rgr .r-notes-box{background:#e8f5e9;color:#1b5e20;border-color:#43a047}
+.rgr .r-foot{border-top:1px solid #c8e6c9;color:#2e7d32}
+
+/* 11. ELECTRONICS */
+.rel{background:#fff}
+.rel .r-head{background:linear-gradient(135deg,#0d1b2a,#1565c0);color:#fff;padding:15px 16px 11px;text-align:center}
+.rel .r-biz{font-size:16px;font-weight:800}
+.rel .r-tag{font-size:9.5px;color:rgba(255,255,255,.55);margin:2px 0 7px}
+.rel .r-meta{background:rgba(255,255,255,.1);border-radius:5px;padding:5px 10px;display:flex;justify-content:space-between;font-size:9.5px;color:rgba(255,255,255,.85);font-weight:700}
+.rel .r-cbox{background:#e3f2fd;border:1px solid #90caf9}.rel .rcf-l{color:#0d47a1}.rel .rcf-v{color:#0d1a2e}
+.rel .r-table th{background:#0d47a1;color:#fff}
+.rel .r-table td:nth-child(even){background:#f8fbff}
+.rel .r-tots{background:#e3f2fd}.rel .r-tr{color:#0d47a1}
+.rel .r-grand{background:linear-gradient(135deg,#0d1b2a,#1565c0)}.rel .r-grand-v{color:#82b1ff}
+.rel .r-notes-box{background:#fff3e0;color:#e65100;border-color:#ff9800}
+.rel .r-foot{border-top:1px solid #bbdefb;color:#0d47a1}
+
+/* 12. RESTAURANT */
+.rho{background:#fff}
+.rho .r-head{background:linear-gradient(135deg,#bf360c,#ff5722);color:#fff;padding:16px 16px 11px;text-align:center}
+.rho .r-biz{font-size:17px;font-weight:800;font-family:'Libre Baskerville',serif}
+.rho .r-tag{font-size:9.5px;color:rgba(255,255,255,.58);margin:2px 0 8px}
+.rho .r-meta{background:rgba(255,255,255,.1);border-radius:5px;padding:5px 10px;display:flex;justify-content:space-between;font-size:9.5px;color:rgba(255,255,255,.85);font-weight:700}
+.rho .r-cbox{background:#fdf0e8;border:1px solid #ffccbc}.rho .rcf-l{color:#bf360c}.rho .rcf-v{color:#1a0a00}
+.rho .r-table th{background:#bf360c;color:#fff}
+.rho .r-table td{background:#fdf0e8}
+.rho .r-tots{background:#fff;border:1px solid #ffccbc}.rho .r-tr{color:#bf360c}
+.rho .r-grand{background:linear-gradient(135deg,#bf360c,#ff5722)}.rho .r-grand-v{color:#ffe0b2}
+.rho .r-notes-box{background:#fff8e1;color:#5d4037;border-color:#ff5722}
+.rho .r-foot{background:#fdf0e8;border-top:1px solid #ffccbc;color:#bf360c}
+
+/* 13. MINIMALIST B&W */
+.rbw{background:#fff}
+.rbw .r-head{border-bottom:3px solid #000;padding:14px 16px 10px}
+.rbw .r-head-top{display:flex;align-items:center;gap:10px}
+.rbw .r-biz{font-size:19px;font-weight:800;color:#000;letter-spacing:-.4px}
+.rbw .r-tag{font-size:9.5px;color:#555}
+.rbw .r-meta{display:flex;justify-content:space-between;font-size:9.5px;color:#000;font-weight:700;margin-top:6px}
+.rbw .r-cbox{border:1.5px solid #000}.rbw .rcf-l{color:#666}.rbw .rcf-v{color:#000}
+.rbw .r-table th{background:#000;color:#fff}
+.rbw .r-table td{border-bottom:1px solid #ccc}
+.rbw .r-tots{border:1.5px solid #000}.rbw .r-tr{color:#333}
+.rbw .r-grand{background:#000}.rbw .r-grand-v{color:#fff}
+.rbw .r-notes-box{color:#555;border-color:#000;background:#f5f5f5}
+.rbw .r-foot{border-top:2px solid #000;color:#555}
+
+/* 14. BEAUTY / SALON (PINK) */
+.rpk{background:linear-gradient(180deg,#fce4ec,#fff)}
+.rpk .r-head{background:linear-gradient(135deg,#880e4f,#e91e63);color:#fff;padding:18px 16px 13px;text-align:center}
+.rpk .r-biz{font-size:17px;font-weight:800}
+.rpk .r-tag{font-size:9.5px;color:rgba(255,255,255,.58);margin:2px 0 8px}
+.rpk .r-meta{background:rgba(255,255,255,.12);border-radius:5px;padding:5px 10px;display:flex;justify-content:space-between;font-size:9.5px;color:rgba(255,255,255,.85);font-weight:700}
+.rpk .r-cbox{background:linear-gradient(135deg,#fce4ec,#f8bbd9);border:1px solid #f48fb1}
+.rpk .rcf-l{color:#880e4f}.rpk .rcf-v{color:#3e0022}
+.rpk .r-table th{background:linear-gradient(90deg,#880e4f,#e91e63);color:#fff}
+.rpk .r-table td:nth-child(even){background:#fdf0f5}
+.rpk .r-tots{background:linear-gradient(135deg,#fce4ec,#f8bbd9);border:1px solid #f48fb1}
+.rpk .r-tr{color:#880e4f}
+.rpk .r-grand{background:linear-gradient(135deg,#880e4f,#e91e63)}.rpk .r-grand-v{color:#fce4ec}
+.rpk .r-notes-box{background:#fff8f9;color:#880e4f;border-color:#e91e63}
+.rpk .r-foot{border-top:1px solid #f48fb1;color:#880e4f}
+
+/* 15. LUXURY GOLD */
+.rgo{background:#1a1200}
+.rgo .r-head{background:linear-gradient(135deg,#2d1800,#b8860b);color:#fff;padding:18px 16px 13px;text-align:center;border-bottom:2px solid #d4af37}
+.rgo .r-biz{font-size:17px;font-weight:800;color:#ffd700}
+.rgo .r-tag{font-size:9.5px;color:rgba(255,215,0,.5);margin:2px 0 8px}
+.rgo .r-meta{background:rgba(212,175,55,.12);border-radius:5px;padding:5px 10px;display:flex;justify-content:space-between;font-size:9.5px;color:rgba(255,215,0,.8);font-weight:700;border:1px solid rgba(212,175,55,.22)}
+.rgo .r-cbox{background:rgba(212,175,55,.08);border:1px solid rgba(212,175,55,.25)}
+.rgo .rcf-l{color:#b8860b}.rgo .rcf-v{color:#ffd700}
+.rgo .r-table th{background:linear-gradient(90deg,#d4af37,#b8860b);color:#1a1200}
+.rgo .r-table td{border-bottom:1px solid rgba(212,175,55,.2);color:#e8d5a0;background:transparent}
+.rgo .r-tots{background:rgba(212,175,55,.08);border:1px solid rgba(212,175,55,.2)}
+.rgo .r-tr{color:#d4af37}
+.rgo .r-grand{background:linear-gradient(135deg,#d4af37,#ffd700);color:#1a1200}
+.rgo .r-grand-l{color:#1a1200}.rgo .r-grand-v{color:#1a1200}
+.rgo .r-notes-box{background:rgba(212,175,55,.08);color:#d4af37;border-color:#d4af37}
+.rgo .r-foot{border-top:1px solid rgba(212,175,55,.3);color:#b8860b}
+
+/* 16. GST TAX INVOICE */
+.rgst{background:#fff;border:2px solid #333}
+.rgst .r-head{padding:13px 16px 9px;border-bottom:2px solid #333}
+.rgst .r-head-top{display:flex;align-items:center;gap:11px;margin-bottom:7px}
+.rgst .r-logo-box{width:50px;height:50px;border:2px solid #333;border-radius:5px;display:flex;align-items:center;justify-content:center;font-size:22px;overflow:hidden;flex-shrink:0}
+.rgst .r-logo-box img{width:100%;height:100%;object-fit:cover}
+.rgst .r-biz{font-size:15px;font-weight:800;color:#000}
+.rgst .r-tag{font-size:9px;color:#555}
+.rgst .r-gstin{font-size:9.5px;color:#000;font-weight:700;margin-top:3px}
+.rgst .r-inv-title{font-size:12.5px;font-weight:800;text-transform:uppercase;letter-spacing:.8px;text-align:center;background:#f0f0f0;padding:5px;border:1px solid #ccc}
+.rgst .r-meta{display:grid;grid-template-columns:1fr 1fr;gap:3px;font-size:9.5px;color:#000;font-weight:700;margin-top:6px}
+.rgst .r-meta span{display:flex;gap:3px}
+.rgst .r-meta b{color:#555;font-weight:500}
+.rgst .r-cbox{border:1.5px solid #ccc;background:#fafafa}
+.rgst .rcf-l{color:#666}.rgst .rcf-v{color:#000}
+.rgst .r-table{border:1px solid #ccc}
+.rgst .r-table th{border:1px solid #ccc;background:#f0f0f0;color:#000}
+.rgst .r-table td{border:1px solid #ddd;color:#000;background:#fff}
+.rgst .r-tots{border:1.5px solid #ccc;background:#fafafa}.rgst .r-tr{color:#000;border-bottom:1px dashed #ddd}
+.rgst .r-grand{background:#000;border-radius:3px}
+.rgst .r-notes-box{background:#fafafa;color:#555;border-color:#000}
+.rgst .r-auth-row{display:flex;justify-content:space-between;margin-top:13px;padding-top:9px;border-top:1px dashed #aaa}
+.rgst .r-auth-item{text-align:center;flex:1}
+.rgst .r-auth-line{border-top:1px solid #000;width:75%;margin:20px auto 2px}
+.rgst .r-auth-lbl{font-size:8.5px;font-weight:700;color:#555;text-transform:uppercase}
+.rgst .r-foot{border-top:2px solid #333;color:#555}
+
+/* 17. QUESTION PAPER */
+.rqp{background:#fff;border:2px solid #333}
+.rqp .r-head{text-align:center;padding:12px 16px 9px;border-bottom:2px solid #333}
+.rqp .r-biz{font-size:15px;font-weight:800;color:#000}
+.rqp .r-tag{font-size:9.5px;color:#555;margin:1px 0 5px}
+.rqp .qp-strip{background:#f0f0f0;border:1px solid #ccc;padding:7px;display:grid;grid-template-columns:1fr 1fr;gap:3px;font-size:10px;font-weight:700;color:#000;margin-top:5px}
+.rqp .qp-strip b{color:#555;font-weight:500}
+.rqp .qp-instr{background:#fffde7;border:1px solid #ffe082;border-radius:5px;padding:7px 9px;font-size:10.5px;color:#5d3000;margin:9px 0 8px}
+.rqp .qp-instr-t{font-weight:800;margin-bottom:3px}
+.rqp .qp-instr ul{padding-left:12px}
+.rqp .qp-instr li{padding:1px 0;font-size:10px}
+.rqp .qp-sec{font-size:11px;font-weight:800;text-transform:uppercase;background:#000;color:#fff;padding:3px 8px;display:inline-block;margin:9px 0 5px}
+.rqp .qp-q{margin-bottom:8px;padding-bottom:8px;border-bottom:1px dashed #ccc}
+.rqp .qp-q-head{display:flex;justify-content:space-between;align-items:flex-start;gap:6px}
+.rqp .qp-q-num{font-size:11px;font-weight:800;color:#000;white-space:nowrap}
+.rqp .qp-q-mark{font-size:9px;font-weight:700;color:#555;white-space:nowrap}
+.rqp .qp-q-text{font-size:11.5px;color:#222;margin:3px 0 4px}
+.rqp .qp-ans-line{border-bottom:1px solid #ccc;height:17px;margin:3px 0}
+.rqp .r-foot{text-align:center;border-top:2px solid #333;color:#555}
+
+/* STATUS STAMP COLORS */
+.ss-paid{background:#e8f5e9;color:#1b5e20;border:1.5px solid #a5d6a7}
+.ss-unpaid{background:#fff3e0;color:#bf5000;border:1.5px solid #ffe082}
+.ss-due{background:#fce4ec;color:#880e4f;border:1.5px solid #f48fb1}
+</style>
+</head>
+<body>
+
+<!-- TOPBAR -->
+<div class="topbar">
+  <div class="tb-left">
+    <div class="tb-logo" id="tbLogo" onclick="v('logoIn').click()" title="Upload Logo">
+      <span id="tbEmoji">🧾</span>
+      <div class="tb-logo-badge">✏</div>
+    </div>
+    <div>
+      <div class="tb-name">Nirbhay Bill App</div>
+      <div class="tb-sub">NG® UNIVERSAL LEDGER ECOSYSTEM</div>
+    </div>
+  </div>
+  <div class="tb-right">
+    <select class="tb-lang" id="langSel" onchange="setLang(this.value)">
+      <option value="en">EN</option>
+      <option value="hi">हिन्दी</option>
+      <option value="mr">मराठी</option>
+    </select>
+    <div class="menu-btn" onclick="openSB()"><span></span><span></span><span></span></div>
+  </div>
+</div>
+<input type="file" id="logoIn" accept="image/*" style="display:none" onchange="uploadLogo(event)"/>
+
+<!-- SIDEBAR OVERLAY -->
+<div class="sob" id="sob" onclick="closeSB()"></div>
+<div class="sb" id="sb">
+  <div class="sb-head">
+    <div class="sb-head-title">☰ Menu</div>
+    <div class="sb-head-sub">NIRBHAY BILL APP v3.0</div>
+    <button class="sb-close" onclick="closeSB()">✕</button>
+  </div>
+  <div class="sb-sec">
+    <div class="sb-sec-lbl">Quick Actions</div>
+    <div class="sb-item" onclick="closeSB();generateBill()"><div class="sb-ico" style="background:#e8f0fe">🧾</div><div class="sb-body"><div class="sb-t1">Generate Bill</div><div class="sb-t2">Create receipt</div></div><span class="badge b-on">Active</span></div>
+    <div class="sb-item" onclick="closeSB();resetForm()"><div class="sb-ico" style="background:#e8f5e9">🔄</div><div class="sb-body"><div class="sb-t1">Reset Form</div><div class="sb-t2">Clear all fields</div></div></div>
+    <div class="sb-item" onclick="closeSB();openPlans()"><div class="sb-ico" style="background:#fff8e1">💎</div><div class="sb-body"><div class="sb-t1">Plans & Pricing</div><div class="sb-t2">₹20 / ₹49 / ₹99 per month</div></div><span class="badge b-new">New</span></div>
+  </div>
+  <div class="sb-div"></div>
+  <div class="sb-sec">
+    <div class="sb-sec-lbl">Features</div>
+    <div class="sb-item" onclick="closeSB();openUpcoming()"><div class="sb-ico" style="background:#fff3e0">🚀</div><div class="sb-body"><div class="sb-t1">Upcoming Features</div><div class="sb-t2">3–14 days</div></div><span class="badge b-soon">Soon</span></div>
+    <div class="sb-item"><div class="sb-ico" style="background:#fce4ec">📸</div><div class="sb-body"><div class="sb-t1">Photo Attach</div><div class="sb-t2">Add images to bill items</div></div><span class="badge b-prem">Premium</span></div>
+    <div class="sb-item"><div class="sb-ico" style="background:#ede7f6">☁️</div><div class="sb-body"><div class="sb-t1">Cloud Backup</div><div class="sb-t2">Auto-sync to cloud</div></div><span class="badge b-soon">5 Days</span></div>
+    <div class="sb-item"><div class="sb-ico" style="background:#e8f5e9">📊</div><div class="sb-body"><div class="sb-t1">Analytics</div><div class="sb-t2">Sales & revenue reports</div></div><span class="badge b-soon">7 Days</span></div>
+    <div class="sb-item"><div class="sb-ico" style="background:#e3f2fd">💬</div><div class="sb-body"><div class="sb-t1">WhatsApp Share</div><div class="sb-t2">Direct receipt sharing</div></div><span class="badge b-soon">3 Days</span></div>
+  </div>
+  <div class="sb-div"></div>
+  <div class="sb-sec">
+    <div class="sb-sec-lbl">Help & Feedback</div>
+    <div class="sb-item" onclick="closeSB();openFeedback()"><div class="sb-ico" style="background:#fff8e1">⭐</div><div class="sb-body"><div class="sb-t1">Feedback & Rating</div><div class="sb-t2">Share your experience</div></div></div>
+    <div class="sb-item"><div class="sb-ico" style="background:#e0f2f1">📞</div><div class="sb-body"><div class="sb-t1">Support</div><div class="sb-t2">Contact us</div></div><span class="badge b-soon">Soon</span></div>
+  </div>
+  <div class="sb-foot">Nirbhay Bill App v3.0 · NG® Universal Ledger Ecosystem<br><span style="opacity:.5">Made with ❤️ for Indian Businesses</span></div>
+</div>
+
+<!-- RECEIPT FORMAT CHIPS -->
+<div class="chips-wrap">
+  <div class="chips-label">🎨 Receipt Style — Choose Format</div>
+  <div class="chips-scroll" id="styleBar">
+    <div class="chip on" data-style="digital" onclick="selStyle(this)">💎 Digital Premium</div>
+    <div class="chip" data-style="kaccha" onclick="selStyle(this)">📄 Normal Paper</div>
+    <div class="chip" data-style="thermal" onclick="selStyle(this)">🖨️ Thermal Roll</div>
+    <div class="chip" data-style="nthermal" onclick="selStyle(this)">🆕 New Thermal</div>
+    <div class="chip" data-style="medical" onclick="selStyle(this)">💊 Prescription</div>
+    <div class="chip" data-style="auto" onclick="selStyle(this)">🔧 Job Card</div>
+    <div class="chip" data-style="boutique" onclick="selStyle(this)">👗 Boutique</div>
+    <div class="chip" data-style="school" onclick="selStyle(this)">🏫 School Fees</div>
+    <div class="chip" data-style="salary" onclick="selStyle(this)">💰 Salary Slip</div>
+    <div class="chip" data-style="grocery" onclick="selStyle(this)">🛒 Grocery</div>
+    <div class="chip" data-style="electronics" onclick="selStyle(this)">⚡ Electronics</div>
+    <div class="chip" data-style="restaurant" onclick="selStyle(this)">🍽️ Restaurant</div>
+    <div class="chip" data-style="bw" onclick="selStyle(this)">🖤 Minimalist</div>
+    <div class="chip" data-style="pink" onclick="selStyle(this)">💗 Beauty/Salon</div>
+    <div class="chip" data-style="gold" onclick="selStyle(this)">✨ Luxury Gold</div>
+    <div class="chip" data-style="gst" onclick="selStyle(this)">📋 GST Invoice</div>
+    <div class="chip" data-style="qpaper" onclick="selStyle(this)">❓ Question Paper</div>
+  </div>
+</div>
+
+<div class="wrap">
+
+<!-- LOGO CARD -->
+<div class="card">
+  <div class="card-hd"><div class="card-ico">🖼️</div><div><div class="card-title">Logo & Branding</div><div class="card-sub">Upload logo — appears on receipt header</div></div></div>
+  <div class="logo-area" onclick="v('logoIn').click()">
+    <div class="logo-prev" id="logoPrev"><span id="logoEmoji">🏢</span></div>
+    <div class="logo-txt"><div class="t1">Upload Business Logo</div><div class="t2">JPG, PNG, SVG · Tap to change</div></div>
+  </div>
+  <div class="photo-area">
+    <span style="font-size:20px">📸</span>
+    <div><div style="font-size:11.5px;font-weight:700;color:#5d3000">Attach Product Photo<span class="prem-badge">PREMIUM</span></div><div style="font-size:9.5px;color:#8d5600;font-weight:500">Add item images to bill — Upgrade to unlock</div></div>
+  </div>
+</div>
+
+<!-- BUSINESS TYPE -->
+<div class="card">
+  <div class="card-hd"><div class="card-ico">🏢</div><div><div class="card-title">Business Type</div><div class="card-sub">Selects the right form & receipt format</div></div></div>
+  <div class="biz-grid" id="bizGrid">
+    <button class="biz-btn on" data-biz="garments" onclick="selBiz(this)"><span class="be">🛍️</span><span class="bl">Garments</span></button>
+    <button class="biz-btn" data-biz="grocery" onclick="selBiz(this)"><span class="be">🛒</span><span class="bl">Grocery</span></button>
+    <button class="biz-btn" data-biz="medical" onclick="selBiz(this)"><span class="be">🏥</span><span class="bl">Medical</span></button>
+    <button class="biz-btn" data-biz="electronics" onclick="selBiz(this)"><span class="be">⚡</span><span class="bl">Electronics</span></button>
+    <button class="biz-btn" data-biz="autoparts" onclick="selBiz(this)"><span class="be">👨‍🔧</span><span class="bl">Auto Parts</span></button>
+    <button class="biz-btn" data-biz="school" onclick="selBiz(this)"><span class="be">🏫</span><span class="bl">School</span></button>
+    <button class="biz-btn" data-biz="restaurant" onclick="selBiz(this)"><span class="be">🍽️</span><span class="bl">Restaurant</span></button>
+    <button class="biz-btn" data-biz="salon" onclick="selBiz(this)"><span class="be">💗</span><span class="bl">Salon</span></button>
+    <button class="biz-btn" data-biz="general" onclick="selBiz(this)"><span class="be">💼</span><span class="bl">General</span></button>
+  </div>
+</div>
+
+<!-- SCHOOL MODULE -->
+<div class="ctx" id="ctx-school">
+  <div class="card">
+    <div class="card-hd"><div class="card-ico">🏫</div><div><div class="card-title">School Module</div><div class="card-sub">Choose what to create</div></div></div>
+    <div class="sub-tabs">
+      <button class="sub-tab on" data-stype="fees" onclick="selSchoolType(this)">📋 Student Fees</button>
+      <button class="sub-tab" data-stype="salary" onclick="selSchoolType(this)">💰 Teacher Salary</button>
+      <button class="sub-tab" data-stype="qpaper" onclick="selSchoolType(this)">❓ Question Paper</button>
+    </div>
+
+    <!-- FEES SUB -->
+    <div id="sch-fees">
+      <div class="g2">
+        <div class="fg"><label class="fl">Student Name</label><input class="fi" id="studentName" placeholder="Rahul Sharma"/></div>
+        <div class="fg"><label class="fl">Class / Roll No.</label><input class="fi" id="studentClass" placeholder="10-A / 15"/></div>
+      </div>
+      <div class="g2">
+        <div class="fg"><label class="fl">Father's Name</label><input class="fi" id="fatherName" placeholder="Suresh Sharma"/></div>
+        <div class="fg"><label class="fl">Academic Year</label><input class="fi" id="academicYear" placeholder="2024-25"/></div>
+      </div>
+      <div class="g2">
+        <div class="fg"><label class="fl">Fee Type</label>
+          <select class="fs" id="feeType">
+            <option>Tuition Fee</option><option>Admission Fee</option><option>Exam Fee</option>
+            <option>Library Fee</option><option>Sports Fee</option><option>Lab Fee</option>
+            <option>Transport Fee</option><option>Annual Fee</option><option>Other</option>
+          </select>
+        </div>
+        <div class="fg"><label class="fl">Month / Term</label><input class="fi" id="feeMonth" placeholder="April 2025 / Q1"/></div>
+      </div>
+    </div>
+
+    <!-- SALARY SUB -->
+    <div id="sch-salary" style="display:none">
+      <div class="g2">
+        <div class="fg"><label class="fl">Teacher Name</label><input class="fi" id="teacherName" placeholder="Mrs. Priya Joshi"/></div>
+        <div class="fg"><label class="fl">Employee ID</label><input class="fi" id="empId" placeholder="EMP-001"/></div>
+      </div>
+      <div class="g2">
+        <div class="fg"><label class="fl">Designation</label><input class="fi" id="designation" placeholder="Senior Teacher"/></div>
+        <div class="fg"><label class="fl">Subject</label><input class="fi" id="teacherSubject" placeholder="Mathematics"/></div>
+      </div>
+      <div class="g2">
+        <div class="fg"><label class="fl">Department</label><input class="fi" id="department" placeholder="Science Dept."/></div>
+        <div class="fg"><label class="fl">Month of Salary</label><input class="fi" id="salaryMonth" placeholder="May 2025"/></div>
+      </div>
+      <div class="hr"></div>
+      <div style="font-size:11px;font-weight:800;color:var(--p);margin-bottom:8px">💰 Earnings</div>
+      <div class="g2">
+        <div class="fg"><label class="fl">Basic Salary (₹)</label><input class="fi" id="basicSal" type="number" placeholder="25000" oninput="calcSal()"/></div>
+        <div class="fg"><label class="fl">Days Present</label><input class="fi" id="daysPresent" type="number" placeholder="26" oninput="calcSal()"/></div>
+      </div>
+      <div class="g3">
+        <div class="fg"><label class="fl">HRA (₹)</label><input class="fi" id="hra" type="number" placeholder="0" oninput="calcSal()"/></div>
+        <div class="fg"><label class="fl">DA (₹)</label><input class="fi" id="da" type="number" placeholder="0" oninput="calcSal()"/></div>
+        <div class="fg"><label class="fl">Other Allow (₹)</label><input class="fi" id="otherAllow" type="number" placeholder="0" oninput="calcSal()"/></div>
+      </div>
+      <div style="font-size:11px;font-weight:800;color:var(--r);margin-bottom:8px;margin-top:4px">📉 Deductions</div>
+      <div class="g3">
+        <div class="fg"><label class="fl">PF (₹)</label><input class="fi" id="pf" type="number" placeholder="0" oninput="calcSal()"/></div>
+        <div class="fg"><label class="fl">TDS (₹)</label><input class="fi" id="tds" type="number" placeholder="0" oninput="calcSal()"/></div>
+        <div class="fg"><label class="fl">Other Ded (₹)</label><input class="fi" id="otherDed" type="number" placeholder="0" oninput="calcSal()"/></div>
+      </div>
+      <!-- LIVE SALARY CALC -->
+      <div class="salary-calc" id="salaryCalcBox">
+        <div class="salary-row"><span>Basic Salary</span><span id="sc-basic">₹0</span></div>
+        <div class="salary-row"><span>Earned Basic (×days)</span><span id="sc-earned">₹0</span></div>
+        <div class="salary-row"><span>+ HRA</span><span id="sc-hra">₹0</span></div>
+        <div class="salary-row"><span>+ DA</span><span id="sc-da">₹0</span></div>
+        <div class="salary-row"><span>+ Other Allow</span><span id="sc-oa">₹0</span></div>
+        <div class="salary-row" style="color:var(--g)"><span>Gross Earnings</span><span id="sc-gross">₹0</span></div>
+        <div class="salary-row" style="color:var(--r)"><span>– PF</span><span id="sc-pf">₹0</span></div>
+        <div class="salary-row" style="color:var(--r)"><span>– TDS</span><span id="sc-tds">₹0</span></div>
+        <div class="salary-row" style="color:var(--r)"><span>– Other Ded</span><span id="sc-od">₹0</span></div>
+        <div class="salary-row total"><span>NET SALARY</span><span id="sc-net">₹0</span></div>
+      </div>
+    </div>
+
+    <!-- QUESTION PAPER SUB -->
+    <div id="sch-qpaper" style="display:none">
+      <div class="g2">
+        <div class="fg"><label class="fl">Subject</label><input class="fi" id="qpSub" placeholder="Mathematics"/></div>
+        <div class="fg"><label class="fl">Total Marks</label><input class="fi" id="qpMarks" type="number" placeholder="100"/></div>
+      </div>
+      <div class="g2">
+        <div class="fg"><label class="fl">Time Allowed</label><input class="fi" id="qpTime" placeholder="3 Hours"/></div>
+        <div class="fg"><label class="fl">Class / Exam</label><input class="fi" id="qpClass" placeholder="Class 10 / Annual"/></div>
+      </div>
+      <div class="fg"><label class="fl">Instructions</label><textarea class="fi" id="qpInstr" rows="3" placeholder="1. All questions compulsory.&#10;2. Write neat and clean.&#10;3. No calculator allowed."></textarea></div>
+      <div id="qList"></div>
+      <button class="add-row-btn" onclick="addQ()" style="margin-top:10px">＋ Add Question</button>
+    </div>
+  </div>
+</div>
+
+<!-- BUSINESS DETAILS -->
+<div class="card">
+  <div class="card-hd"><div class="card-ico">📋</div><div><div class="card-title">Business Details</div><div class="card-sub">Your shop / clinic / school info</div></div></div>
+  <div class="fg"><label class="fl">Business / School Name</label><input class="fi" id="bizName" placeholder="e.g. Sharma Garments"/></div>
+  <div class="g2">
+    <div class="fg"><label class="fl">Address</label><input class="fi" id="bizAddr" placeholder="123 Main Road, City"/></div>
+    <div class="fg"><label class="fl">Phone / Email</label><input class="fi" id="bizPhone" placeholder="9876543210"/></div>
+  </div>
+  <div class="g2">
+    <div class="fg"><label class="fl">GSTIN</label><input class="fi" id="bizGstin" placeholder="27AAAAA0000A1Z5"/></div>
+    <div class="fg"><label class="fl">State</label><input class="fi" id="bizState" placeholder="Maharashtra"/></div>
+  </div>
+  <div class="hr"></div>
+  <!-- CUSTOMER / EMPLOYEE -->
+  <div id="custSection">
+    <div class="g2">
+      <div class="fg"><label class="fl">Customer Name</label><input class="fi" id="custName" placeholder="Customer Name"/></div>
+      <div class="fg"><label class="fl">Phone</label><input class="fi" id="custPhone" type="tel" placeholder="9876543210"/></div>
+    </div>
+    <div class="fg"><label class="fl">Address (Optional)</label><textarea class="fi" id="custAddr" rows="2" placeholder="Customer address..."></textarea></div>
+  </div>
+
+  <!-- PAYMENT STATUS -->
+  <div class="fg">
+    <label class="fl">Payment Status</label>
+    <div class="ps-row">
+      <button class="ps-btn ps-paid sel" id="ps-paid" onclick="setPS('paid')">✅ Paid</button>
+      <button class="ps-btn ps-unpaid" id="ps-unpaid" onclick="setPS('unpaid')">⏳ Unpaid</button>
+      <button class="ps-btn ps-due" id="ps-due" onclick="setPS('due')">🔴 Due</button>
+    </div>
+  </div>
+  <div class="fg" id="dueAmtRow" style="display:none">
+    <label class="fl">Due Amount (₹)</label>
+    <input class="fi" id="dueAmt" type="number" placeholder="0" min="0"/>
+  </div>
+
+  <!-- CONTEXT FIELDS -->
+  <div class="ctx" id="ctx-medical">
+    <div class="hr"></div>
+    <div class="g2">
+      <div class="fg"><label class="fl">Doctor Name</label><input class="fi" id="doctorName" placeholder="Dr. Sharma"/></div>
+      <div class="fg"><label class="fl">Age / Sex</label><input class="fi" id="ageSex" placeholder="28 / M"/></div>
+    </div>
+    <div class="fg"><label class="fl">Diagnosis</label><input class="fi" id="diagnosis" placeholder="Fever, Cold..."/></div>
+  </div>
+  <div class="ctx" id="ctx-autoparts">
+    <div class="hr"></div>
+    <div class="g2">
+      <div class="fg"><label class="fl">Vehicle No.</label><input class="fi" id="vehicleNo" placeholder="MH 12 AB 1234"/></div>
+      <div class="fg"><label class="fl">Model</label><input class="fi" id="vehicleModel" placeholder="Maruti Swift"/></div>
+    </div>
+    <div class="g2">
+      <div class="fg"><label class="fl">KM Reading</label><input class="fi" id="kmReading" placeholder="45000 km"/></div>
+      <div class="fg"><label class="fl">Mechanic</label><input class="fi" id="mechanicName" placeholder="Raju"/></div>
+    </div>
+  </div>
+  <div class="ctx" id="ctx-electronics">
+    <div class="hr"></div>
+    <div class="g2">
+      <div class="fg"><label class="fl">Warranty</label><input class="fi" id="warrantyPeriod" placeholder="1 Year"/></div>
+      <div class="fg"><label class="fl">Serial No.</label><input class="fi" id="serialNo" placeholder="SN12345678"/></div>
+    </div>
+  </div>
+  <div class="ctx" id="ctx-grocery">
+    <div class="hr"></div>
+    <div class="g2">
+      <div class="fg"><label class="fl">Delivery Date</label><input class="fi" id="deliveryDate" type="date"/></div>
+      <div class="fg"><label class="fl">Payment Mode</label><select class="fs" id="payModeGr"><option>Cash</option><option>UPI</option><option>Card</option><option>Credit</option></select></div>
+    </div>
+  </div>
+  <div class="ctx on" id="ctx-garments">
+    <div class="hr"></div>
+    <div class="g2">
+      <div class="fg"><label class="fl">Payment Mode</label><select class="fs" id="payModeG"><option>Cash</option><option>UPI</option><option>Card</option><option>Credit</option></select></div>
+      <div class="fg"><label class="fl">Order Ref.</label><input class="fi" id="orderRef" placeholder="ORD-001"/></div>
+    </div>
+  </div>
+  <div class="ctx" id="ctx-restaurant">
+    <div class="hr"></div>
+    <div class="g2">
+      <div class="fg"><label class="fl">Table No.</label><input class="fi" id="tableNo" placeholder="Table 5"/></div>
+      <div class="fg"><label class="fl">Covers / Pax</label><input class="fi" id="covers" placeholder="4 persons"/></div>
+    </div>
+    <div class="fg"><label class="fl">Waiter Name</label><input class="fi" id="waiterName" placeholder="Ramesh"/></div>
+  </div>
+  <div class="ctx" id="ctx-salon">
+    <div class="hr"></div>
+    <div class="g2">
+      <div class="fg"><label class="fl">Stylist Name</label><input class="fi" id="stylistName" placeholder="Priya"/></div>
+      <div class="fg"><label class="fl">Service Type</label><select class="fs" id="serviceType"><option>Haircut</option><option>Facial</option><option>Waxing</option><option>Manicure</option><option>Other</option></select></div>
+    </div>
+  </div>
+  <div class="ctx" id="ctx-general">
+    <div class="hr"></div>
+    <div class="g2">
+      <div class="fg"><label class="fl">Payment Mode</label><select class="fs" id="payModeGen"><option>Cash</option><option>UPI</option><option>Card</option><option>Credit</option></select></div>
+      <div class="fg"><label class="fl">Ref No.</label><input class="fi" id="refNo" placeholder="REF-001"/></div>
+    </div>
+  </div>
+</div>
+
+<!-- ITEMS CARD (hidden for salary/qpaper) -->
+<div class="card" id="itemsCard">
+  <div class="card-hd"><div class="card-ico">📦</div><div><div class="card-title" id="itemsTitle">Items / Services</div><div class="card-sub">Rate × Qty = Total (live calculated)</div></div></div>
+  <div class="items-list" id="itemsList"></div>
+  <button class="add-row-btn" onclick="addItem()" style="margin-top:10px">＋ Add More Items</button>
+</div>
+
+<!-- DISCOUNT & TAX (hidden for salary/qpaper) -->
+<div class="card" id="adjCard">
+  <div class="card-hd"><div class="card-ico">🧮</div><div><div class="card-title">Discount & Tax</div><div class="card-sub">Applied on subtotal</div></div></div>
+  <div class="g2">
+    <div class="fg"><label class="fl">Discount (%)</label>
+      <div class="adj-w"><input class="fi" id="discPct" type="number" value="0" min="0" max="100" oninput="recalc()"/><span class="adj-u">%</span></div>
+    </div>
+    <div class="fg"><label class="fl">GST / Tax (%)</label>
+      <div class="adj-w"><input class="fi" id="gstPct" type="number" value="0" min="0" max="100" oninput="recalc()"/><span class="adj-u">%</span></div>
+    </div>
+  </div>
+  <div class="fg"><label class="fl">Flat Discount (₹)</label>
+    <div class="adj-w"><input class="fi" id="discFlat" type="number" value="0" min="0" oninput="recalc()"/><span class="adj-u">₹</span></div>
+  </div>
+  <div class="fg"><label class="fl">Payment Mode</label>
+    <select class="fs" id="payMode"><option>Cash</option><option>UPI</option><option>Card</option><option>Cheque</option><option>Net Banking</option></select>
+  </div>
+</div>
+
+<!-- TOTALS -->
+<div class="totals-panel" id="totalsPanel">
+  <div class="tp-title">BILL SUMMARY</div>
+  <div class="tp-row"><span class="tp-lbl">Subtotal</span><span class="tp-val" id="dSub">₹0.00</span></div>
+  <div class="tp-row tp-disc"><span class="tp-lbl">Discount</span><span class="tp-val" id="dDisc">–₹0.00</span></div>
+  <div class="tp-row tp-gst"><span class="tp-lbl">GST Added</span><span class="tp-val" id="dGst">+₹0.00</span></div>
+  <div class="tp-grand"><span class="tp-grand-lbl">GRAND TOTAL</span><span class="tp-grand-val">₹<span id="dGrand">0.00</span></span></div>
+</div>
+
+<!-- NOTES -->
+<div class="card">
+  <div class="card-hd"><div class="card-ico">📝</div><div><div class="card-title">Notes / Terms</div><div class="card-sub">Printed at receipt bottom</div></div></div>
+  <textarea class="fi" id="billNotes" rows="2" placeholder="Thank you! Goods once sold will not be returned."></textarea>
+</div>
+
+<!-- ACTIONS -->
+<div class="actions">
+  <button class="btn btn-p" onclick="generateBill()">🧾 Generate Bill / Receipt</button>
+  <button class="btn btn-g" onclick="quickSave()">💾 Save HD Image</button>
+  <button class="btn btn-o" onclick="shareR()">📤 Share Receipt</button>
+  <button class="btn btn-out" onclick="resetForm()">🔄 Reset Form</button>
+</div>
+
+<!-- LEDGER -->
+<div class="card">
+  <div class="card-hd"><div class="card-ico">📚</div><div><div class="card-title">Bill History (Saved)</div><div class="card-sub">Stored locally · Tap to reload receipt</div></div></div>
+  <div class="ledger-list" id="ledgerList"><div class="ledger-empty">No bills yet. Create your first bill!</div></div>
+</div>
+
+</div><!-- /wrap -->
+
+<!-- RECEIPT MODAL -->
+<div class="modal" id="receiptModal">
+  <div class="modal-box"><div id="receiptContent"></div></div>
+  <div class="modal-acts">
+    <button class="btn btn-g" onclick="saveImg()">💾 Save HD Receipt Image</button>
+    <button class="btn btn-o" onclick="shareR()">📤 Share</button>
+    <button class="btn btn-out" onclick="closeM('receiptModal')">✕ Close</button>
+  </div>
+</div>
+
+<!-- UPCOMING MODAL -->
+<div class="cmodal" id="upcomingModal">
+  <div class="cmodal-box">
+    <div class="cmodal-head">
+      <button class="cmodal-close" onclick="closeM('upcomingModal')">✕</button>
+      <div class="cmodal-head-title">🚀 Upcoming Features</div>
+      <div class="cmodal-head-sub">Next 3–14 days · Nirbhay Bill App v3</div>
+    </div>
+    <div class="upm-item"><span class="upm-ico">💬</span><div><div class="upm-t1">WhatsApp Direct Share</div><div class="upm-t2">Send receipt via WhatsApp instantly</div></div><span class="eta eta-3">3 Days</span></div>
+    <div class="upm-item"><span class="upm-ico">☁️</span><div><div class="upm-t1">Cloud Backup & Sync</div><div class="upm-t2">Bills safe even if phone changes</div></div><span class="eta eta-5">5 Days</span></div>
+    <div class="upm-item"><span class="upm-ico">📊</span><div><div class="upm-t1">Analytics Dashboard</div><div class="upm-t2">Daily/Monthly revenue charts</div></div><span class="eta eta-7">7 Days</span></div>
+    <div class="upm-item"><span class="upm-ico">🖨️</span><div><div class="upm-t1">Bluetooth Thermal Print</div><div class="upm-t2">Connect to 58mm/80mm printers</div></div><span class="eta eta-5">5 Days</span></div>
+    <div class="upm-item"><span class="upm-ico">💳</span><div><div class="upm-t1">UPI QR on Receipt</div><div class="upm-t2">Customer scans & pays instantly</div></div><span class="eta eta-5">5 Days</span></div>
+    <div class="upm-item"><span class="upm-ico">📦</span><div><div class="upm-t1">Inventory / Stock</div><div class="upm-t2">Track stock with auto deduction</div></div><span class="eta eta-7">7 Days</span></div>
+    <div class="upm-item"><span class="upm-ico">👥</span><div><div class="upm-t1">Customer Database</div><div class="upm-t2">Save & search customer history</div></div><span class="eta eta-7">7 Days</span></div>
+    <div class="upm-item"><span class="upm-ico">🔐</span><div><div class="upm-t1">App Lock / PIN</div><div class="upm-t2">Secure your bills with PIN</div></div><span class="eta eta-7">7 Days</span></div>
+    <div class="upm-item"><span class="upm-ico">📸</span><div><div class="upm-t1">Photo Attach to Items</div><div class="upm-t2">Add product images in bill</div></div><span class="eta eta-14">Premium</span></div>
+    <div class="upm-item"><span class="upm-ico">✍️</span><div><div class="upm-t1">Digital Signature</div><div class="upm-t2">Draw signature on receipt</div></div><span class="eta eta-14">14 Days</span></div>
+    <div class="upm-item"><span class="upm-ico">🌐</span><div><div class="upm-t1">More Languages</div><div class="upm-t2">Tamil, Telugu, Gujarati, Kannada</div></div><span class="eta eta-7">7 Days</span></div>
+    <div style="padding:13px"><button class="btn btn-p" onclick="closeM('upcomingModal')">Got it! 🚀</button></div>
+  </div>
+</div>
+
+<!-- PLANS MODAL -->
+<div class="cmodal" id="plansModal">
+  <div class="cmodal-box">
+    <div class="cmodal-head">
+      <button class="cmodal-close" onclick="closeM('plansModal')">✕</button>
+      <div class="cmodal-head-title">💎 Plans & Pricing</div>
+      <div class="cmodal-head-sub">Choose the right plan for your business</div>
+    </div>
+    <div class="plans-grid">
+      <div class="plan-card">
+        <div class="plan-price">FREE <span>/ forever</span></div>
+        <div class="plan-name">Starter — Basic Billing</div>
+        <ul class="plan-features">
+          <li>All 17 receipt formats</li>
+          <li>Unlimited local bills</li>
+          <li>Save HD receipt images</li>
+          <li>Teacher salary slip</li>
+          <li>Question paper generator</li>
+          <li>3 language support</li>
+        </ul>
+        <button class="plan-btn" style="background:var(--s2);color:var(--t2);border:2px solid var(--br)" onclick="toast('✅ You are on the Free plan!')">Current Plan</button>
+      </div>
+      <div class="plan-card featured">
+        <div class="plan-badge">Most Popular</div>
+        <div class="plan-price">₹20 <span>/ month</span></div>
+        <div class="plan-name">Pro — For Growing Businesses</div>
+        <ul class="plan-features">
+          <li>Everything in Free</li>
+          <li>Cloud backup & sync</li>
+          <li>WhatsApp share</li>
+          <li>UPI QR on receipt</li>
+          <li>Customer database</li>
+          <li>Analytics dashboard</li>
+        </ul>
+        <button class="plan-btn" style="background:var(--p);color:#fff" onclick="toast('🚀 Pro plan — Coming in 5 days!')">Coming Soon</button>
+      </div>
+      <div class="plan-card">
+        <div class="plan-price">₹49 <span>/ month</span></div>
+        <div class="plan-name">Business — Full Suite</div>
+        <ul class="plan-features">
+          <li>Everything in Pro</li>
+          <li>Bluetooth thermal print</li>
+          <li>Inventory management</li>
+          <li>Photo attach to items</li>
+          <li>App lock & PIN</li>
+          <li>Priority support</li>
+        </ul>
+        <button class="plan-btn" style="background:linear-gradient(135deg,#4a148c,#ab47bc);color:#fff" onclick="toast('🚀 Business plan — Coming soon!')">Coming Soon</button>
+      </div>
+      <div class="plan-card">
+        <div class="plan-price">₹99 <span>/ month</span></div>
+        <div class="plan-name">Enterprise — Full White Label</div>
+        <ul class="plan-features">
+          <li>Everything in Business</li>
+          <li>Custom branding & logo</li>
+          <li>Digital signature</li>
+          <li>Multi-user accounts</li>
+          <li>API access</li>
+          <li>Dedicated support</li>
+        </ul>
+        <button class="plan-btn" style="background:linear-gradient(90deg,#d4af37,#b8860b);color:#1a1200" onclick="toast('🚀 Enterprise — Coming soon!')">Coming Soon</button>
+      </div>
+    </div>
+    <div style="padding:0 14px 14px"><button class="btn btn-out" onclick="closeM('plansModal')">Close</button></div>
+  </div>
+</div>
+
+<!-- FEEDBACK MODAL -->
+<div class="cmodal" id="feedbackModal">
+  <div class="cmodal-box">
+    <div class="cmodal-head">
+      <button class="cmodal-close" onclick="closeM('feedbackModal')">✕</button>
+      <div class="cmodal-head-title">⭐ Feedback & Rating</div>
+      <div class="cmodal-head-sub">Your feedback is saved locally</div>
+    </div>
+    <div class="cmodal-body">
+      <div style="font-size:12px;font-weight:700;color:var(--t2);margin-bottom:8px">Rate your experience:</div>
+      <div class="star-row" id="starRow">
+        <span class="star" onclick="rateStar(1)">⭐</span>
+        <span class="star" onclick="rateStar(2)">⭐</span>
+        <span class="star" onclick="rateStar(3)">⭐</span>
+        <span class="star" onclick="rateStar(4)">⭐</span>
+        <span class="star" onclick="rateStar(5)">⭐</span>
+      </div>
+      <div class="fg"><label class="fl">Your Suggestion / Complaint</label><textarea class="fi" id="fbText" rows="3" placeholder="Tell us what you want next, or any bug..."></textarea></div>
+      <div class="fg"><label class="fl">Your Name (Optional)</label><input class="fi" id="fbName" placeholder="Your name"/></div>
+      <div style="display:flex;gap:7px;margin-top:7px">
+        <button class="btn btn-p" style="flex:1;padding:12px;font-size:13px" onclick="submitFb()">Submit 🚀</button>
+        <button class="btn btn-out" style="flex:1;padding:12px;font-size:13px" onclick="closeM('feedbackModal')">Cancel</button>
+      </div>
+      <div id="fbList" style="margin-top:12px"></div>
+    </div>
+  </div>
+</div>
+
+<!-- SAVING OVERLAY -->
+<div class="sov" id="sov"><div class="sov-spin"></div><span>Generating HD Image…</span></div>
+
+<!-- TOAST -->
+<div class="toast" id="toastEl"></div>
+
+<script>
+/* ===== CONSTANTS ===== */
+const BNAMES={
+  garments:'Sharma Garments',grocery:'Patel Grocery Store',medical:'City Medical Hall',
+  electronics:'Raj Electronics',autoparts:'Auto Zone Parts',school:'Nirbhay Public School',
+  restaurant:'Spice Garden Restaurant',salon:'Beauty & Glow Salon',general:'My General Store'
+};
+const BICONS={garments:'🛍️',grocery:'🛒',medical:'🏥',electronics:'⚡',autoparts:'👨‍🔧',school:'🏫',restaurant:'🍽️',salon:'💗',general:'💼'};
+const AUTO_STYLE={garments:'boutique',grocery:'grocery',medical:'medical',electronics:'electronics',autoparts:'auto',school:'school',restaurant:'restaurant',salon:'pink',general:'digital'};
+const BRAND='Nirbhay Bill App · NG® Universal Ledger Ecosystem';
+const BTAG='Professional Billing for Every Business · India';
+
+/* ===== STATE ===== */
+let lang='en',biz='garments',rStyle='digital',payStatus='paid',schoolType='fees',starRating=0,logoUrl=null,curR=null,iCnt=0,qCnt=0;
+let billNum=parseInt(localStorage.getItem('nb_bn3')||'1000');
+let ledger=JSON.parse(localStorage.getItem('nb_ledger3')||'[]');
+let feedbacks=JSON.parse(localStorage.getItem('nb_fb')||'[]');
+const CTXS=['medical','autoparts','electronics','grocery','garments','restaurant','salon','general','school'];
+const v=id=>document.getElementById(id);
+const fmt=n=>'₹'+Number(n||0).toFixed(2);
+function now(){const d=new Date();return{date:d.toLocaleDateString('en-IN',{day:'2-digit',month:'short',year:'numeric'}),time:d.toLocaleTimeString('en-IN',{hour:'2-digit',minute:'2-digit'})};}
+function toast(m){const t=v('toastEl');t.textContent=m;t.classList.add('on');setTimeout(()=>t.classList.remove('on'),2700);}
+
+/* ===== LOGO ===== */
+function uploadLogo(e){
+  const f=e.target.files[0];if(!f)return;
+  const r=new FileReader();
+  r.onload=ev=>{
+    logoUrl=ev.target.result;
+    v('logoPrev').innerHTML=`<img src="${logoUrl}"/>`;
+    v('tbLogo').innerHTML=`<img class="tb-logo-img" src="${logoUrl}"/>`;
+    toast('✅ Logo uploaded!');
+  };
+  r.readAsDataURL(f);
+}
+
+/* ===== SIDEBAR ===== */
+function openSB(){v('sb').classList.add('on');v('sob').classList.add('on');}
+function closeSB(){v('sb').classList.remove('on');v('sob').classList.remove('on');}
+
+/* ===== STYLE ===== */
+function selStyle(chip){
+  document.querySelectorAll('.chip').forEach(c=>c.classList.remove('on'));
+  chip.classList.add('on');rStyle=chip.dataset.style;
+}
+
+/* ===== BIZ ===== */
+function selBiz(btn){
+  document.querySelectorAll('.biz-btn').forEach(b=>b.classList.remove('on'));
+  btn.classList.add('on');biz=btn.dataset.biz;
+  const cur=v('bizName');
+  const allN=Object.values(BNAMES);
+  if(!cur.value||allN.includes(cur.value))cur.value=BNAMES[biz]||'';
+  CTXS.forEach(t=>{const el=v('ctx-'+t);if(el)el.classList.toggle('on',t===biz);});
+  // School module
+  const isSchool=biz==='school';
+  v('ctx-school').classList.toggle('on',isSchool);
+  // Auto suggest style
+  const sug=AUTO_STYLE[biz]||'digital';
+  document.querySelectorAll('.chip').forEach(c=>{c.classList.toggle('on',c.dataset.style===sug);});
+  rStyle=sug;
+  // Show/hide items vs salary/qpaper
+  updateSchoolUI();
+}
+
+/* ===== SCHOOL MODULE ===== */
+function selSchoolType(btn){
+  document.querySelectorAll('.sub-tab').forEach(b=>b.classList.remove('on'));
+  btn.classList.add('on');schoolType=btn.dataset.stype;
+  updateSchoolUI();
+}
+function updateSchoolUI(){
+  if(biz!=='school'){
+    v('itemsCard').style.display='';v('adjCard').style.display='';v('totalsPanel').style.display='';
+    return;
+  }
+  v('sch-fees').style.display=schoolType==='fees'?'':'none';
+  v('sch-salary').style.display=schoolType==='salary'?'':'none';
+  v('sch-qpaper').style.display=schoolType==='qpaper'?'':'none';
+  const showItems=schoolType==='fees';
+  const showQP=schoolType==='qpaper';
+  v('itemsCard').style.display=showItems||!showQP&&!schoolType==='salary'?'':'none';
+  v('adjCard').style.display=schoolType==='salary'||showQP?'none':'';
+  v('totalsPanel').style.display=schoolType==='salary'||showQP?'none':'';
+  if(schoolType==='salary'){
+    document.querySelectorAll('.chip').forEach(c=>c.classList.toggle('on',c.dataset.style==='salary'));
+    rStyle='salary';
+  }else if(showQP){
+    document.querySelectorAll('.chip').forEach(c=>c.classList.toggle('on',c.dataset.style==='qpaper'));
+    rStyle='qpaper';
+  }else{
+    document.querySelectorAll('.chip').forEach(c=>c.classList.toggle('on',c.dataset.style==='school'));
+    rStyle='school';
+  }
+}
+
+/* ===== SALARY CALC ===== */
+function calcSal(){
+  const basic=parseFloat(v('basicSal').value)||0;
+  const days=parseFloat(v('daysPresent').value)||26;
+  const hra=parseFloat(v('hra').value)||0;
+  const da=parseFloat(v('da').value)||0;
+  const oa=parseFloat(v('otherAllow').value)||0;
+  const pf=parseFloat(v('pf').value)||0;
+  const tds=parseFloat(v('tds').value)||0;
+  const od=parseFloat(v('otherDed').value)||0;
+  const earned=(basic/26)*days;
+  const gross=earned+hra+da+oa;
+  const net=Math.max(0,gross-pf-tds-od);
+  v('sc-basic').textContent=fmt(basic);
+  v('sc-earned').textContent=fmt(earned);
+  v('sc-hra').textContent=fmt(hra);
+  v('sc-da').textContent=fmt(da);
+  v('sc-oa').textContent=fmt(oa);
+  v('sc-gross').textContent=fmt(gross);
+  v('sc-pf').textContent=fmt(pf);
+  v('sc-tds').textContent=fmt(tds);
+  v('sc-od').textContent=fmt(od);
+  v('sc-net').textContent=fmt(net);
+  return{basic,days,hra,da,oa,pf,tds,od,earned,gross,net};
+}
+
+/* ===== PAY STATUS ===== */
+function setPS(s){
+  payStatus=s;
+  ['paid','unpaid','due'].forEach(k=>{
+    const b=v('ps-'+k);
+    b.classList.toggle('sel',k===s);
+  });
+  v('dueAmtRow').style.display=s==='due'?'block':'none';
+}
+
+/* ===== ITEMS ===== */
+function addItem(data={}){
+  iCnt++;const id=iCnt;
+  const list=v('itemsList');
+  const row=document.createElement('div');
+  row.className='item-row';row.id='ir-'+id;
+  row.innerHTML=`
+    <div class="ir-head"><span class="ir-num">#${id}</span><span class="ir-tot" id="irt-${id}">₹0.00</span></div>
+    <div class="ir-fields">
+      <div class="fg ir-full"><label class="fl">Item / Service Name</label><input class="fi iname" type="text" placeholder="Item name..." value="${data.name||''}" oninput="recalc()"/></div>
+      <div class="fg"><label class="fl">Rate (₹)</label><input class="fi irate" type="number" min="0" step="0.01" placeholder="0.00" value="${data.rate||''}" oninput="updIR(${id});recalc()"/></div>
+      <div class="fg"><label class="fl">Qty</label><input class="fi iqty" type="number" min="1" placeholder="1" value="${data.qty||1}" oninput="updIR(${id});recalc()"/></div>
+    </div>
+    <button class="rm-btn" onclick="rmItem(${id})">🗑️ Remove</button>`;
+  list.appendChild(row);
+  if(data.rate)updIR(id);recalc();
+}
+function updIR(id){
+  const row=v('ir-'+id);if(!row)return;
+  const r=parseFloat(row.querySelector('.irate').value)||0;
+  const q=parseFloat(row.querySelector('.iqty').value)||0;
+  v('irt-'+id).textContent=fmt(r*q);
+}
+function rmItem(id){const r=v('ir-'+id);if(r){r.remove();recalc();}}
+
+/* ===== QUESTIONS ===== */
+function addQ(data={}){
+  qCnt++;const id=qCnt;
+  const list=v('qList');
+  const row=document.createElement('div');
+  row.className='item-row';row.id='qr-'+id;
+  row.innerHTML=`
+    <div class="ir-head"><span class="ir-num">Q${id}</span></div>
+    <div class="fg"><label class="fl">Question Text</label><textarea class="fi" rows="2" placeholder="Enter question...">${data.q||''}</textarea></div>
+    <div class="g2">
+      <div class="fg"><label class="fl">Marks</label><input class="fi" type="number" placeholder="5" value="${data.marks||5}"/></div>
+      <div class="fg"><label class="fl">Type</label><select class="fs"><option>Short Answer</option><option>Long Answer</option><option>MCQ</option><option>Fill Blank</option><option>True/False</option></select></div>
+    </div>
+    <button class="rm-btn" onclick="rmQ(${id})">🗑️ Remove</button>`;
+  list.appendChild(row);
+}
+function rmQ(id){const r=v('qr-'+id);if(r)r.remove();}
+
+/* ===== RECALC ===== */
+function recalc(){
+  let sub=0;
+  document.querySelectorAll('#itemsList .item-row').forEach(row=>{
+    const r=parseFloat(row.querySelector('.irate').value)||0;
+    const q=parseFloat(row.querySelector('.iqty').value)||0;
+    sub+=r*q;
+  });
+  const dp=parseFloat(v('discPct').value)||0;
+  const gp=parseFloat(v('gstPct').value)||0;
+  const df=parseFloat(v('discFlat').value)||0;
+  const discA=sub*dp/100+df;
+  const aft=Math.max(0,sub-discA);
+  const gstA=aft*gp/100;
+  const grand=aft+gstA;
+  v('dSub').textContent=fmt(sub);
+  v('dDisc').textContent='–'+fmt(discA);
+  v('dGst').textContent='+'+fmt(gstA);
+  v('dGrand').textContent=Number(grand).toFixed(2);
+  return{sub,discA,gstA,grand,dp,gp,df};
+}
+
+/* ===== COLLECT ===== */
+function collectItems(){
+  const items=[];
+  document.querySelectorAll('#itemsList .item-row').forEach(row=>{
+    const name=row.querySelector('.iname').value.trim();
+    const rate=parseFloat(row.querySelector('.irate').value)||0;
+    const qty=parseFloat(row.querySelector('.iqty').value)||0;
+    if(name||rate>0)items.push({name:name||'—',rate,qty,total:rate*qty});
+  });
+  return items;
+}
+function collectQs(){
+  const qs=[];
+  document.querySelectorAll('#qList .item-row').forEach(row=>{
+    const q=row.querySelector('textarea').value.trim();
+    const marks=row.querySelector('input[type=number]').value||5;
+    const type=row.querySelector('select').value;
+    if(q)qs.push({q,marks,type});
+  });
+  return qs;
+}
+function collectCtx(){
+  const c={};
+  if(biz==='medical'){c.doctorName=v('doctorName').value;c.ageSex=v('ageSex').value;c.diagnosis=v('diagnosis').value;}
+  else if(biz==='autoparts'){c.vehicleNo=v('vehicleNo').value;c.vehicleModel=v('vehicleModel').value;c.kmReading=v('kmReading').value;c.mechanicName=v('mechanicName').value;}
+  else if(biz==='electronics'){c.warrantyPeriod=v('warrantyPeriod').value;c.serialNo=v('serialNo').value;}
+  else if(biz==='grocery'){c.deliveryDate=v('deliveryDate').value;c.payMode=v('payModeGr').value;}
+  else if(biz==='garments'){c.payMode=v('payModeG').value;c.orderRef=v('orderRef').value;}
+  else if(biz==='restaurant'){c.tableNo=v('tableNo').value;c.covers=v('covers').value;c.waiterName=v('waiterName').value;}
+  else if(biz==='salon'){c.stylistName=v('stylistName').value;c.serviceType=v('serviceType').value;}
+  else if(biz==='general'){c.payMode=v('payModeGen').value;c.refNo=v('refNo').value;}
+  else if(biz==='school'){
+    if(schoolType==='fees'){c.studentName=v('studentName').value;c.studentClass=v('studentClass').value;c.fatherName=v('fatherName').value;c.academicYear=v('academicYear').value;c.feeType=v('feeType').value;c.feeMonth=v('feeMonth').value;}
+    else if(schoolType==='salary'){const s=calcSal();Object.assign(c,s);c.teacherName=v('teacherName').value;c.empId=v('empId').value;c.designation=v('designation').value;c.teacherSubject=v('teacherSubject').value;c.department=v('department').value;c.salaryMonth=v('salaryMonth').value;}
+    else if(schoolType==='qpaper'){c.qpSub=v('qpSub').value;c.qpMarks=v('qpMarks').value;c.qpTime=v('qpTime').value;c.qpClass=v('qpClass').value;c.qpInstr=v('qpInstr').value;}
+  }
+  return c;
+}
+
+/* ===== GENERATE ===== */
+function generateBill(){
+  const isSal=biz==='school'&&schoolType==='salary';
+  const isQP=biz==='school'&&schoolType==='qpaper';
+  const items=(!isSal&&!isQP)?collectItems():[];
+  if(!isSal&&!isQP&&!items.length){toast('⚠️ Add at least one item!');return;}
+  const tot=(!isSal&&!isQP)?recalc():{sub:0,discA:0,gstA:0,grand:0,dp:0,gp:0,df:0};
+  billNum++;localStorage.setItem('nb_bn3',billNum);
+  const ts=now();
+  const ctx=collectCtx();
+  const d={
+    billNo:'NB-'+billNum,date:ts.date,time:ts.time,
+    bizName:v('bizName').value||BNAMES[biz],
+    bizAddr:v('bizAddr').value,bizPhone:v('bizPhone').value,
+    bizGstin:v('bizGstin').value,bizState:v('bizState').value,
+    custName:v('custName').value||'—',custPhone:v('custPhone').value,
+    custAddr:v('custAddr').value,
+    notes:v('billNotes').value,
+    biz,style:rStyle,schoolType,payStatus,
+    dueAmt:payStatus==='due'?(v('dueAmt').value||0):0,
+    payMode:v('payMode').value,
+    logoUrl,ctx,items,qs:collectQs(),...tot
+  };
+  curR=d;
+  renderR(d);
+  v('receiptModal').classList.add('on');
+  ledger.unshift(d);
+  if(ledger.length>100)ledger.splice(100);
+  localStorage.setItem('nb_ledger3',JSON.stringify(ledger));
+  renderLedger();
+  toast('✅ Bill saved to history!');
+}
+
+/* ===== RECEIPT RENDER HELPERS ===== */
+function logoH(d,sz=44){
+  if(d.logoUrl)return`<div style="width:${sz}px;height:${sz}px;border-radius:9px;overflow:hidden;flex-shrink:0;border:1.5px solid rgba(255,255,255,.2)"><img src="${d.logoUrl}" style="width:100%;height:100%;object-fit:cover"/></div>`;
+  return`<span style="font-size:${Math.round(sz*.55)}px;line-height:1">${BICONS[d.biz]||'🏢'}</span>`;
+}
+function statusH(d){
+  const cl=d.payStatus==='paid'?'ss-paid':d.payStatus==='unpaid'?'ss-unpaid':'ss-due';
+  const lb=d.payStatus==='paid'?'✅ PAID':d.payStatus==='unpaid'?'⏳ UNPAID':'🔴 DUE';
+  const du=d.payStatus==='due'&&d.dueAmt>0?` · Due: ₹${d.dueAmt}`:'';
+  return`<div class="r-status ${cl}">${lb}${du}</div>`;
+}
+function metaH(d,cls=''){
+  let h=`<div class="r-cbox ${cls}">`;
+  h+=`<div class="rcf"><div class="rcf-l">Customer</div><div class="rcf-v">${d.custName}</div></div>`;
+  if(d.custPhone)h+=`<div class="rcf"><div class="rcf-l">Phone</div><div class="rcf-v">${d.custPhone}</div></div>`;
+  if(d.custAddr)h+=`<div class="rcf rcf-full"><div class="rcf-l">Address</div><div class="rcf-v">${d.custAddr}</div></div>`;
+  const rows=ctxRows(d);
+  rows.forEach(([l,val,full])=>{h+=`<div class="rcf${full?' rcf-full':''}"><div class="rcf-l">${l}</div><div class="rcf-v">${val}</div></div>`;});
+  h+='</div>';
+  return h;
+}
+function custLinesH(d){
+  const rows=ctxRows(d);
+  let h=`<div class="r-cline"><b>Name:</b>${d.custName}</div>`;
+  if(d.custPhone)h+=`<div class="r-cline"><b>Phone:</b>${d.custPhone}</div>`;
+  if(d.custAddr)h+=`<div class="r-cline"><b>Addr:</b>${d.custAddr}</div>`;
+  rows.forEach(([l,val])=>{h+=`<div class="r-cline"><b>${l}:</b>${val}</div>`;});
+  return h;
+}
+function ctxRows(d){
+  const c=d.ctx||{};const rows=[];
+  if(d.biz==='medical'){
+    if(c.doctorName)rows.push(['Doctor',c.doctorName]);if(c.ageSex)rows.push(['Age/Sex',c.ageSex]);if(c.diagnosis)rows.push(['Diagnosis',c.diagnosis,'full']);
+  }else if(d.biz==='autoparts'){
+    if(c.vehicleNo)rows.push(['Vehicle',c.vehicleNo]);if(c.vehicleModel)rows.push(['Model',c.vehicleModel]);if(c.kmReading)rows.push(['KM',c.kmReading]);if(c.mechanicName)rows.push(['Mechanic',c.mechanicName]);
+  }else if(d.biz==='electronics'){
+    if(c.warrantyPeriod)rows.push(['Warranty',c.warrantyPeriod]);if(c.serialNo)rows.push(['Serial No.',c.serialNo]);
+  }else if(d.biz==='grocery'){
+    if(c.deliveryDate)rows.push(['Delivery',c.deliveryDate]);if(c.payMode)rows.push(['Payment',c.payMode]);
+  }else if(d.biz==='garments'){
+    if(c.payMode)rows.push(['Payment',c.payMode]);if(c.orderRef)rows.push(['Order Ref.',c.orderRef]);
+  }else if(d.biz==='restaurant'){
+    if(c.tableNo)rows.push(['Table',c.tableNo]);if(c.covers)rows.push(['Covers',c.covers]);if(c.waiterName)rows.push(['Waiter',c.waiterName]);
+  }else if(d.biz==='salon'){
+    if(c.stylistName)rows.push(['Stylist',c.stylistName]);if(c.serviceType)rows.push(['Service',c.serviceType]);
+  }else if(d.biz==='general'){
+    if(c.payMode)rows.push(['Payment',c.payMode]);if(c.refNo)rows.push(['Ref No.',c.refNo]);
+  }else if(d.biz==='school'&&d.schoolType==='fees'){
+    if(c.studentName)rows.push(['Student',c.studentName]);if(c.studentClass)rows.push(['Class',c.studentClass]);if(c.fatherName)rows.push(["Father",c.fatherName]);if(c.academicYear)rows.push(['Yr',c.academicYear]);if(c.feeType)rows.push(['Fee Type',c.feeType]);if(c.feeMonth)rows.push(['Month',c.feeMonth]);
+  }
+  return rows;
+}
+function totalsH(d){
+  let h=`<div class="r-tr"><span>Subtotal</span><span>${fmt(d.sub)}</span></div>`;
+  if(d.discA>0)h+=`<div class="r-tr disc"><span>Discount${d.dp?' ('+d.dp+'%)':''}</span><span>–${fmt(d.discA)}</span></div>`;
+  if(d.gstA>0)h+=`<div class="r-tr gst"><span>GST (${d.gp}%)</span><span>+${fmt(d.gstA)}</span></div>`;
+  if(d.payMode)h+=`<div class="r-tr"><span>Payment</span><span>${d.payMode}</span></div>`;
+  return h;
+}
+function itemTableH(d){
+  const rows=d.items.map((it,i)=>`<tr><td>${i+1}</td><td>${it.name}</td><td>${fmt(it.rate)}</td><td>${it.qty}</td><td class="am">${fmt(it.total)}</td></tr>`).join('');
+  return`<table class="r-table"><thead><tr><th>#</th><th>Item</th><th>Rate</th><th>Qty</th><th>Amt</th></tr></thead><tbody>${rows}</tbody></table>`;
+}
+function notesH(d){return d.notes?`<div class="r-notes-box">${d.notes}</div>`:'';}
+function footH(){return`<div class="r-foot"><div>${BRAND}</div><div style="opacity:.5;font-size:8px;margin-top:1px">${BTAG}</div></div>`;}
+function signRow(labels){return`<div class="r-sign-row">${labels.map(l=>`<div class="r-sign-item"><div class="r-sign-line"></div><div class="r-sign-lbl">${l}</div></div>`).join('')}</div>`;}
+
+/* ===== RENDER RECEIPT ===== */
+function renderR(d){
+  const sl=d.style||'digital';
+  const stat=statusH(d);
+  let html='';
+
+  // 1. DIGITAL PREMIUM
+  if(sl==='digital'){html=`<div class="rd">
+    <div class="r-head"><div class="r-head-top"><div class="r-logo">${d.logoUrl?`<img src="${d.logoUrl}"/>`:`<span style="font-size:22px">${BICONS[d.biz]||'🏢'}</span>`}</div><div><div class="r-biz">${d.bizName}</div>${d.bizAddr?`<div class="r-tag">${d.bizAddr}</div>`:''}</div></div>
+    ${d.bizPhone?`<div class="r-tag">${d.bizPhone}</div>`:''}${d.bizGstin?`<div class="r-tag">GSTIN: ${d.bizGstin}</div>`:''}
+    <div class="r-meta"><span>📄 ${d.billNo}</span><span>📅 ${d.date} ${d.time}</span></div></div>
+    <div class="r-body"><div class="r-sec">Customer Details</div>${metaH(d)}<div class="r-sec">Items / Services</div>${itemTableH(d)}
+    <div class="r-tots">${totalsH(d)}</div><div class="r-grand" style="background:linear-gradient(135deg,#0c0f23,#1e3a6e)"><span class="r-grand-l">GRAND TOTAL</span><span class="r-grand-v" style="color:#00e5bb">${fmt(d.grand)}</span></div>
+    ${stat}${notesH(d)}${footH()}</div></div>`;}
+
+  // 2. NORMAL PAPER (Kaccha)
+  else if(sl==='kaccha'){html=`<div class="rk">
+    <div class="r-wm">${d.bizName}</div><div class="r-stamp">PAID ✓</div>
+    <div class="torn torn-t"></div>
+    <div class="r-head"><div class="r-biz">${d.bizName}</div>${d.bizAddr?`<div class="r-tag">${d.bizAddr}</div>`:''}<div class="r-meta"><span>${d.billNo}</span><span>${d.date} | ${d.time}</span></div></div>
+    <div class="r-body-wrap"><div class="r-sec">Customer</div>${custLinesH(d)}<div class="r-sec">Items</div>${itemTableH(d)}
+    <div class="r-tots-box">${totalsH(d)}</div><div class="r-grand-kaccha"><span class="r-grand-kaccha-l">TOTAL</span><span class="r-grand-kaccha-v">${fmt(d.grand)}</span></div>
+    ${stat}${notesH(d)}${footH()}</div><div class="torn torn-b"></div></div>`;}
+
+  // 3. THERMAL ROLL
+  else if(sl==='thermal'){html=`<div class="rt"><div class="perf"></div>
+    <div class="r-head"><div class="r-biz">${d.bizName}</div>${d.bizAddr?`<div class="r-tag">${d.bizAddr}</div>`:''}<div class="r-meta"><span>${d.billNo}</span><span>${d.date} ${d.time}</span></div></div>
+    <div class="r-body-wrap"><div class="r-sec">CUSTOMER</div>${custLinesH(d)}<div class="r-sec">ITEMS</div>${itemTableH(d)}
+    <div class="r-tots-box">${totalsH(d)}</div><div class="r-grand-th"><span class="r-grand-th-l">TOTAL</span><span class="r-grand-th-v">${fmt(d.grand)}</span></div>
+    ${stat}${notesH(d)}<div class="r-foot"><div class="r-bc">||||| |||| ||| || || ||| ||||| |||</div><div>${d.billNo}</div><br>${BRAND}</div></div><div class="perf"></div></div>`;}
+
+  // 4. NEW THERMAL
+  else if(sl==='nthermal'){html=`<div class="rnt"><div class="perf"></div>
+    <div class="r-head"><div class="r-biz">${d.bizName}</div>${d.bizAddr?`<div class="r-tag">${d.bizAddr}</div>`:''}<div class="r-meta"><span>${d.billNo}</span><span>${d.date} ${d.time}</span></div></div>
+    <div class="r-body-wrap"><div class="r-sec">Customer Details</div>${custLinesH(d)}<div class="r-sec">Items</div>${itemTableH(d)}
+    <div class="r-tots-box">${totalsH(d)}</div><div class="r-grand-nt"><span class="r-grand-nt-l">GRAND TOTAL</span><span class="r-grand-nt-v">${fmt(d.grand)}</span></div>
+    ${stat}${notesH(d)}${footH()}</div><div class="perf"></div></div>`;}
+
+  // 5. MEDICAL
+  else if(sl==='medical'){html=`<div class="rm">
+    <div class="r-head"><div class="r-rx">℞</div><div class="r-biz">${d.bizName}</div>${d.bizAddr?`<div class="r-tag">${d.bizAddr}</div>`:''}<div class="r-meta"><span>Rx ${d.billNo}</span><span>${d.date} ${d.time}</span></div></div>
+    <div class="r-body">${metaH(d)}<div class="r-sec">Medicines / Services</div>${itemTableH(d)}
+    <div class="r-tots">${totalsH(d)}</div><div class="r-grand"><span class="r-grand-l">Total Amount</span><span class="r-grand-v">${fmt(d.grand)}</span></div>
+    ${stat}${notesH(d)}${footH()}</div></div>`;}
+
+  // 6. AUTO JOB CARD
+  else if(sl==='auto'){html=`<div class="ra">
+    <div class="r-head"><div class="r-head-top"><span style="font-size:24px">🔧</span><div><div class="r-biz">${d.bizName}</div>${d.bizAddr?`<div class="r-tag">${d.bizAddr}</div>`:''}</div></div><div class="r-meta"><span>JOB: ${d.billNo}</span><span>${d.date}</span></div></div>
+    <div class="r-body">${metaH(d)}<div class="r-sec">Parts & Labour</div>${itemTableH(d)}
+    <div class="r-tots">${totalsH(d)}</div><div class="r-grand"><span class="r-grand-l">TOTAL</span><span class="r-grand-v">${fmt(d.grand)}</span></div>
+    ${stat}${notesH(d)}${signRow(['Customer','Mechanic','Owner'])}${footH()}</div></div>`;}
+
+  // 7. BOUTIQUE
+  else if(sl==='boutique'){html=`<div class="rb-style">
+    <div class="r-head"><div class="r-biz">${d.bizName}</div>${d.bizAddr?`<div class="r-tag">${d.bizAddr}</div>`:''}<div class="r-meta"><span>🧾 ${d.billNo}</span><span>📅 ${d.date}</span></div></div>
+    <div class="r-body">${metaH(d)}<div class="r-sec">Items</div>${itemTableH(d)}
+    <div class="r-tots">${totalsH(d)}</div><div class="r-grand"><span class="r-grand-l">GRAND TOTAL</span><span class="r-grand-v">${fmt(d.grand)}</span></div>
+    ${stat}${notesH(d)}${footH()}</div></div>`;}
+
+  // 8. SCHOOL FEES
+  else if(sl==='school'){html=`<div class="rsch">
+    <div class="r-head"><div class="r-logo-big">🏫</div><div class="r-biz">${d.bizName}</div>${d.bizAddr?`<div class="r-tag">${d.bizAddr}</div>`:''}<div class="r-meta"><span>Receipt: ${d.billNo}</span><span>${d.date}</span></div></div>
+    <div class="r-body">${metaH(d)}<div class="r-sec">Fee Details</div>${itemTableH(d)}
+    <div class="r-tots">${totalsH(d)}</div><div class="r-grand"><span class="r-grand-l">Total Amount</span><span class="r-grand-v">${fmt(d.grand)}</span></div>
+    ${stat}${notesH(d)}${signRow(['Student/Parent','Cashier'])}${footH()}</div></div>`;}
+
+  // 9. SALARY SLIP (PREMIUM FORMAT)
+  else if(sl==='sala
